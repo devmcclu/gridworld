@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4369956278597793809}
   - component: {fileID: 7283775283125186841}
+  - component: {fileID: -726322815878858762}
   m_Layer: 0
   m_Name: GrassTile
   m_TagString: Untagged
@@ -82,3 +83,21 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &-726322815878858762
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6949646949871010446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec28d120da5b6eb4cb9d35ba0b64d432, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteList:
+  - {fileID: -6812745508127951216, guid: c165797025544b94984e085e0ebce4fe, type: 3}
+  - {fileID: 9166125722054658032, guid: c165797025544b94984e085e0ebce4fe, type: 3}
+  - {fileID: 6889776548432517796, guid: c165797025544b94984e085e0ebce4fe, type: 3}
+  - {fileID: 7676241852150454346, guid: c165797025544b94984e085e0ebce4fe, type: 3}
+  timeToGrow: 1
