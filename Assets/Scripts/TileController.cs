@@ -24,6 +24,7 @@ public class TileController : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         // Set health value
         health = (int)Random.Range(0, 4);
+        ChangeSprite();
     }
 
     // Update is called once per frame
