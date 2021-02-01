@@ -78,4 +78,10 @@ public class TileController : MonoBehaviour
             ChangeSprite();
         }
     }
+
+    public void ResetGrass()
+    {
+        health = 0;
+        ChangeSprite();
+    }
 }

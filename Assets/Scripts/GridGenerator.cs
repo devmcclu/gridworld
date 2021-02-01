@@ -27,6 +27,7 @@ public class GridGenerator : MonoBehaviour
         // Get a tile to reference
         GameObject refTile = (GameObject)Instantiate(Resources.Load("GrassTile"));
         GameObject refSheep = (GameObject)Instantiate(Resources.Load("rabbit"));
+        float chance;
         for (int curRow = 0; curRow < rows; curRow++)
         {
             for (int curCol = 0; curCol < cols; curCol++)
@@ -42,8 +43,8 @@ public class GridGenerator : MonoBehaviour
                 Vector2 newPos = new Vector2(posX, posY);
                 tile.transform.position = newPos;
 
-                float chance = Random.Range(0, 1);
-                if (chance > .2f)
+                chance = Random.Range(0f, 1f);
+                if (chance > .7f)
                 {
                     GameObject sheep = (GameObject)Instantiate(refSheep, transform);
                     sheep.transform.position = newPos; //+ new Vector2(0.5f, 0.5f);
@@ -52,6 +53,7 @@ public class GridGenerator : MonoBehaviour
         }
 
         Destroy(refTile);
+        Destroy(refSheep);
 
         float gridW = cols * tileSize;
         float gridL = rows * tileSize;

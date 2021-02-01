@@ -13,7 +13,7 @@ public class SheepController : MonoBehaviour
     private int newSheepThreshold = 4;
     // Threshold value for moving towards sheep
     [SerializeField]
-    private int moveToSheepThreshold = 2;
+    private int moveToSheepThreshold = 1;
     // Threshold value for health to move towards grass
     [SerializeField]
     private int moveToGrassThreshold = 3;
@@ -49,18 +49,56 @@ public class SheepController : MonoBehaviour
             // eat grass if on grass
             if(isOnGrass)
             {
-                EatGrass();
+                //GameObject currentTile;
+                foreach (GameObject tile in closeGrass)
+                {
+                    if (Vector3.Distance(transform.position, tile.transform.position) < .1f)
+                    {
+                        EatGrass(tile);
+                        break;
+                    }
+                }
             }
             // else move towards nearest grass
             else
             {
+                float distance = Vector3.Distance(transform.position,
+                                    closeGrass[0].transform.position);
+                GameObject nearestTile = closeGrass[0];
+                foreach (GameObject tile in closeGrass)
+                {
+                    if (Vector3.Distance(transform.position, tile.transform.position)
+                        < distance)
+                    {
+                        distance = Vector3.Distance(transform.position, tile.transform.position);
+                        nearestTile = tile;
+                    }
+                }
 
+                Vector3 newDir = (transform.position - nearestTile.transform.position).normalized;
+                transform.position += newDir;
             }
         }
         // Else if number of sheep below threshold and not next to other sheep
-        else if (closeSheep.Count < moveToSheepThreshold && !isNextToSheep)
+        else if (closeSheep.Count > moveToSheepThreshold && !isNextToSheep)
         {
             // move towards nearest sheep
+
+            float distance = Vector3.Distance(transform.position,
+                                    closeSheep[0].transform.position);
+            GameObject nearestSheep = closeGrass[0];
+            foreach (GameObject tile in closeGrass)
+            {
+                if (Vector3.Distance(transform.position, tile.transform.position)
+                    < distance)
+                {
+                    distance = Vector3.Distance(transform.position, tile.transform.position);
+                    nearestSheep = tile;
+                }
+            }
+
+            Vector3 newDir = (transform.position - nearestSheep.transform.position).normalized;
+            transform.position += newDir;
         }
         // Else if near sheep and health at or above 4
         else if (isNextToSheep && health >= newSheepThreshold)
@@ -73,11 +111,14 @@ public class SheepController : MonoBehaviour
             Vector3 newDir = new Vector3((int)Random.Range(-1, 1), (int)Random.Range(-1, 1));
             transform.position += newDir;
         }
+        CheckPosition();
     }
 
-    void EatGrass()
+    void EatGrass(GameObject tile)
     {
-
+        health++;
+        tile.GetComponent<TileController>().ResetGrass();
+        closeGrass.Remove(tile);
     }
 
     void MakeSheep()
@@ -112,6 +153,30 @@ public class SheepController : MonoBehaviour
         {
             closeGrass.Remove(other.gameObject);
         }  
+    }
+
+    void CheckPosition()
+    {
+        float xOffset = 0;
+        float yOffset = 0;
+        if (transform.position.x > 5)
+        {
+            xOffset = transform.position.x - 5;
+        }
+        if (transform.position.x < 0)
+        {
+            xOffset = -transform.position.x;
+        }
+        if (transform.position.y > 5)
+        {
+            yOffset = transform.position.y - 5;
+        }
+        if (transform.position.y < 0)
+        {
+            xOffset = -transform.position.y;
+        }
+
+        transform.position += new Vector3(xOffset, yOffset);
     }
 
     public void SetHealth(int value)
