@@ -84,4 +84,9 @@ public class TileController : MonoBehaviour
         health = 0;
         ChangeSprite();
     }
+
+    public int GetHealth()
+    {
+        return health;
+    }
 }

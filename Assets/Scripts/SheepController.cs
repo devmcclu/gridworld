@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -150,10 +150,14 @@ public class SheepController : MonoBehaviour
         else if (other.TryGetComponent(typeof(TileController), out Component component2)
                 && !closeGrass.Contains(other.gameObject))
         {
-            closeGrass.Add(other.gameObject);
+            if (other.GetComponent<TileController>().GetHealth() > 0)
+            {
+                closeGrass.Add(other.gameObject);
+            }
         }  
     }
     
+    // REmove sheep and grass that aren't nearby
     void OnTriggerExit2D(Collider2D other)
     {
         if (other.TryGetComponent(typeof(SheepController), out Component component))
