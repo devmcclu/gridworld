@@ -100,6 +100,8 @@ MonoBehaviour:
   moveToSheepThreshold: 2
   moveToGrassThreshold: 3
   timeToMove: 2
+  maxDistance: 9
+  minDistance: 0
 --- !u!61 &2287603118238278585
 BoxCollider2D:
   m_ObjectHideFlags: 0

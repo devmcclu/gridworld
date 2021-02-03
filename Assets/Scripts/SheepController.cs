@@ -29,6 +29,10 @@ public class SheepController : MonoBehaviour
     private List<GameObject> closeGrass = new List<GameObject>();
     private bool isNextToSheep;
     private bool isOnGrass;
+    [SerializeField]
+    private float maxDistance = 9;
+    [SerializeField]
+    private float minDistance = 0;
 
     // Update is called once per frame
     void Update()
@@ -159,21 +163,22 @@ public class SheepController : MonoBehaviour
     {
         float xOffset = 0;
         float yOffset = 0;
-        if (transform.position.x > 5)
+        if (transform.position.x > maxDistance)
         {
-            xOffset = transform.position.x - 5;
+            //xOffset = transform.position.x - maxDistance;
+            xOffset = maxDistance - transform.position.x;
         }
-        if (transform.position.x < 0)
+        else if (transform.position.x < minDistance)
         {
             xOffset = -transform.position.x;
         }
-        if (transform.position.y > 5)
+        if (transform.position.y > minDistance)
         {
-            yOffset = transform.position.y - 5;
+            yOffset = -transform.position.y;
         }
-        if (transform.position.y < 0)
+        else if (transform.position.y < -maxDistance)
         {
-            xOffset = -transform.position.y;
+            yOffset = -(transform.position.y + maxDistance);
         }
 
         transform.position += new Vector3(xOffset, yOffset);
