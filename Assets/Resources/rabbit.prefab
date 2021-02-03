@@ -98,7 +98,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 4
   newSheepThreshold: 4
-  moveToSheepThreshold: 1
+  moveToSheepThreshold: 2
   moveToGrassThreshold: 1
   timeToMove: 2
   closeSheep: []

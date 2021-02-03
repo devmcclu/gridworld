@@ -176,25 +176,25 @@ public class SheepController : MonoBehaviour
     {
         float xOffset = 0;
         float yOffset = 0;
-        if (transform.position.x > maxDistance)
+        if (transform.localPosition.x > maxDistance)
         {
             //xOffset = transform.position.x - maxDistance;
-            xOffset = maxDistance - transform.position.x;
+            xOffset = maxDistance - transform.localPosition.x;
         }
-        else if (transform.position.x < minDistance)
+        else if (transform.localPosition.x < minDistance)
         {
-            xOffset = -transform.position.x;
+            xOffset = -transform.localPosition.x;
         }
         if (transform.position.y > minDistance)
         {
-            yOffset = -transform.position.y;
+            yOffset = -transform.localPosition.y;
         }
-        else if (transform.position.y < -maxDistance)
+        else if (transform.localPosition.y < -maxDistance)
         {
-            yOffset = -(transform.position.y + maxDistance);
+            yOffset = -(transform.localPosition.y + maxDistance);
         }
 
-        transform.position += new Vector3(xOffset, yOffset);
+        transform.localPosition += new Vector3(xOffset, yOffset);
     }
 
     public void SetHealth(int value)
