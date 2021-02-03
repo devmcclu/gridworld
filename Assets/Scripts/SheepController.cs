@@ -66,6 +66,8 @@ public class SheepController : MonoBehaviour
             // else move towards nearest grass
             else
             {
+                Debug.Log("Moving towards GRass");
+
                 float distance = Vector3.Distance(transform.position,
                                     closeGrass[0].transform.position);
                 GameObject nearestTile = closeGrass[0];
@@ -87,7 +89,7 @@ public class SheepController : MonoBehaviour
         else if (closeSheep.Count > moveToSheepThreshold && !isNextToSheep)
         {
             // move towards nearest sheep
-
+            Debug.Log("Moving towards sheep");
             float distance = Vector3.Distance(transform.position,
                                     closeSheep[0].transform.position);
             GameObject nearestSheep = closeGrass[0];
@@ -112,6 +114,7 @@ public class SheepController : MonoBehaviour
         // Else move ot new location
         else
         {
+            Debug.Log("Wondering");
             Vector3 newDir = new Vector3((int)Random.Range(-1, 1), (int)Random.Range(-1, 1));
             transform.position += newDir;
         }
@@ -120,6 +123,7 @@ public class SheepController : MonoBehaviour
 
     void EatGrass(GameObject tile)
     {
+        Debug.Log("Eating grass");
         health++;
         tile.GetComponent<TileController>().ResetGrass();
         closeGrass.Remove(tile);
@@ -127,6 +131,7 @@ public class SheepController : MonoBehaviour
 
     void MakeSheep()
     {
+        Debug.Log("Making sheep");
         // Create new sheep with 1/4 of current health
         GameObject newSheep = (GameObject)Instantiate(Resources.Load("rabbit"),transform.parent);
         newSheep.GetComponent<SheepController>().SetHealth(this.health / 4);
