@@ -24,8 +24,10 @@ public class SheepController : MonoBehaviour
     private float timeToMove = 2;
     private float timer;
     // List of all close by sheep
+    [SerializeField]
     private List<GameObject> closeSheep = new List<GameObject>();
     // List of all close by grass tiles
+    [SerializeField]
     private List<GameObject> closeGrass = new List<GameObject>();
     private bool isNextToSheep;
     private bool isOnGrass;
@@ -118,7 +120,7 @@ public class SheepController : MonoBehaviour
             Vector3 newDir = new Vector3((int)Random.Range(-1, 1), (int)Random.Range(-1, 1));
             transform.position += newDir;
         }
-        CheckPosition();
+        //CheckPosition();
     }
 
     void EatGrass(GameObject tile)
