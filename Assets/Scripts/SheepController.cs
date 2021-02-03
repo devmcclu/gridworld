@@ -140,13 +140,15 @@ public class SheepController : MonoBehaviour
     }
 
     // Count number of sheep and grass near current sheep
-    void OnTriggerEnter2D(Collider2D other)
+    void OnTriggerStay2D(Collider2D other)
     {
-        if (other.TryGetComponent(typeof(SheepController), out Component component))
+        if (other.TryGetComponent(typeof(SheepController), out Component component)
+            && !closeSheep.Contains(other.gameObject))
         {
             closeSheep.Add(other.gameObject);
         }
-        else if (other.TryGetComponent(typeof(TileController), out Component component2))
+        else if (other.TryGetComponent(typeof(TileController), out Component component2)
+                && !closeGrass.Contains(other.gameObject))
         {
             closeGrass.Add(other.gameObject);
         }  
