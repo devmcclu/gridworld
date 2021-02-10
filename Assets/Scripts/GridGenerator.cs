@@ -6,17 +6,20 @@ public class GridGenerator : MonoBehaviour
 {
     // Length of grid
     [SerializeField]
-    private int rows = 5;
+    private int rows = 10;
     // Width of grid
     [SerializeField]
-    private int cols = 5;
+    private int cols = 10;
     // Float for spacing objects
     [SerializeField]
     private float tileSize = 1;
+    // Public facing array of grid objects
+    public GameObject[,] tileArray;
 
     // Start is called before the first frame update
     void Start()
     {
+        tileArray = new GameObject[cols, rows];
         // Place a tile at each (int) coordinate
         GenerateGrid();
         // Randomaly decide if a sheep will spawn
@@ -26,11 +29,12 @@ public class GridGenerator : MonoBehaviour
     {
         // Get a tile to reference
         GameObject refTile = (GameObject)Instantiate(Resources.Load("GrassTile"));
-        GameObject refSheep = (GameObject)Instantiate(Resources.Load("rabbit"));
-        float chance;
-        for (int curRow = 0; curRow < rows; curRow++)
+        //GameObject refSheep = (GameObject)Instantiate(Resources.Load("rabbit"));
+        //float chance;
+        
+        for (int curCol = 0; curCol < cols; curCol++)
         {
-            for (int curCol = 0; curCol < cols; curCol++)
+            for (int curRow = 0; curRow < rows; curRow++)
             {
                 // Create a new tile
                 GameObject tile = (GameObject)Instantiate(refTile, transform);
@@ -42,18 +46,21 @@ public class GridGenerator : MonoBehaviour
                 //Set the position
                 Vector2 newPos = new Vector2(posX, posY);
                 tile.transform.position = newPos;
+                // Put tile in tileArray
+                tileArray[curCol, curRow] = tile;
+                tile.GetComponent<TileCost>().SetPos(curRow, curCol);
 
-                chance = Random.Range(0f, 1f);
+                /* chance = Random.Range(0f, 1f);
                 if (chance > .7f)
                 {
                     GameObject sheep = (GameObject)Instantiate(refSheep, transform);
                     sheep.transform.position = newPos; //+ new Vector2(0.5f, 0.5f);
-                }                
+                } */                
             }
         }
 
         Destroy(refTile);
-        Destroy(refSheep);
+        //Destroy(refSheep);
 
         float gridW = cols * tileSize;
         float gridL = rows * tileSize;

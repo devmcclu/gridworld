@@ -17,6 +17,7 @@ public class DijkstraSheep : MonoBehaviour
 
     void MovementGen()
     {
+        // Movement nodes
         // For all grid objects that are grass
             // Add to list of movement nodes
             // Set cost to inf
