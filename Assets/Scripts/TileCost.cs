@@ -22,4 +22,9 @@ public class TileCost : MonoBehaviour
     {
         pos = new Vector2Int(newX, newY);
     }
+
+    public Vector2Int GetPos()
+    {
+        return pos;
+    }
 }
