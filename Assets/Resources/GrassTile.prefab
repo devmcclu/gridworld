@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: -726322815878858762}
   - component: {fileID: 3488435130205802608}
   - component: {fileID: -2625408012000149074}
+  - component: {fileID: 1729721498478244740}
   m_Layer: 0
   m_Name: GrassTile
   m_TagString: Untagged
@@ -150,3 +151,16 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &1729721498478244740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6949646949871010446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48770e7dd3d8aed4c90eca45644698d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pos: {x: 0, y: 0}
