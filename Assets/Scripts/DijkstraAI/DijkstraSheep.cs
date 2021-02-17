@@ -10,6 +10,8 @@ public class DijkstraSheep : MonoBehaviour
     private GameObject targetNode;
     // 2D Representation of position
     private Vector2Int pos;
+    [SerializeField]
+    private float moveTime = 2f;
 
     void FindTarget()
     {
@@ -35,6 +37,8 @@ public class DijkstraSheep : MonoBehaviour
     {
         // Movement nodes
         Dictionary<GameObject, int> movementNodes = new Dictionary<GameObject, int>();
+        Dictionary<GameObject, int> finalCostNodes = new Dictionary<GameObject, int>();
+        KeyValuePair<GameObject, int> startNode = new KeyValuePair<GameObject, int>(tileArray[0, 0], 0);
         // For all grid objects that are grass
         for (int col = 0; col < tileArray.GetLength(0); col++)
         {
@@ -43,10 +47,11 @@ public class DijkstraSheep : MonoBehaviour
                 if(tileArray[col, row].TryGetComponent(typeof(TileController), out Component component))
                 {
                     // Add to list of movement nodes, Set cost to inf
-                    // Set cost of cur tile to 0           
+                    // Set cost of cur tile to 0      
                     if(tileArray[col, row].GetComponent<TileCost>().GetPos().Equals(pos))
                     {
                         movementNodes.Add(tileArray[col, row], 0);
+                        startNode = new KeyValuePair<GameObject, int>(tileArray[col, row], 0);
                     }
                     else
                     {
@@ -56,12 +61,63 @@ public class DijkstraSheep : MonoBehaviour
             }
         }
         // While movement nodes not empty
+        KeyValuePair<GameObject, int> curNode = startNode;
+        while (movementNodes.Count > 0)
+        {
             // curNode = lowest cost node
+            foreach (KeyValuePair<GameObject, int> entry in movementNodes)
+            {
+                if (entry.Value < curNode.Value)
+                {
+                    curNode = entry;
+                }
+            }
             // remove curNode from movementNode list
+            movementNodes.Remove(curNode.Key);
+            finalCostNodes.Add(curNode.Key, curNode.Value);
             //for each adj node of curNode
+            foreach (KeyValuePair<GameObject, int> node in curNode.Key.GetComponent<TileCost>().adjacentTiles)
+            {
                 // if cost of curNode + move to adjNode cost < adjNode cost
+                if (curNode.Value + node.Value < movementNodes[node.Key])
+                {
                     // adjNode cost = cost of curNode + move to adjNode cost
+                    movementNodes[node.Key] = curNode.Value + node.Value;
+                }
+            }
+        }
+    
+        foreach(KeyValuePair<GameObject, int> entry in finalCostNodes)
+        {
+            if (entry.Value < curNode.Value)
+            {
+                curNode = entry;
+            }
+        }
+        
+        StartCoroutine(StartMovement(finalCostNodes, curNode));
+    }
+
+    IEnumerator StartMovement(Dictionary<GameObject, int> finalCostNodes, KeyValuePair<GameObject, int> curNode)
+    {
+        KeyValuePair<GameObject, int> nextNode = new KeyValuePair<GameObject, int>(tileArray[0, 0], System.Int32.MaxValue);
         // While not to target
+        while (curNode.Key != targetNode)
+        {
             // From curNode, go to lowest cost node
+            finalCostNodes.Remove(curNode.Key);
+            foreach (KeyValuePair<GameObject, int> node in finalCostNodes)
+            {
+                if (node.Value < nextNode.Value)
+                {
+                    nextNode = node;
+                }
+            }
+            Vector3 newPosition = nextNode.Key.gameObject.transform.position;
+            transform.position.Set(newPosition.x, newPosition.y, transform.position.z);
+            pos = nextNode.Key.GetComponent<TileCost>().GetPos();
+            curNode = nextNode;
+            yield return new WaitForSeconds(moveTime);
+        }
     }
 }

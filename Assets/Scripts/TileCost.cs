@@ -5,18 +5,13 @@ using UnityEngine;
 public class TileCost : MonoBehaviour
 {
     // Current cost
-    [SerializeField]
-    private int cost;
+    // [SerializeField]
+    // private int cost;
     // Where in the array the tile is
     [SerializeField]
     private Vector2Int pos;
     // Dictionary: Adj tile w/cost to move to
-    Dictionary<GameObject, int> adjacentTiles = new Dictionary<GameObject, int>();
-    
-    void Start()
-    {
-
-    }
+    public Dictionary<GameObject, int> adjacentTiles = new Dictionary<GameObject, int>();
 
     public void SetPos(int newX, int newY)
     {
