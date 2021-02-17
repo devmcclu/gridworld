@@ -137,8 +137,8 @@ public class DijkstraSheep : MonoBehaviour
             }
             Debug.Log("New place");
 
-            Vector3 newPosition = nextNode.Key.gameObject.transform.position;
-            gameObject.transform.position.Set(newPosition.x, newPosition.y, transform.position.z);
+            Vector3 newPosition = nextNode.Key.gameObject.transform.localPosition;
+            gameObject.transform.localPosition.Set(newPosition.x, newPosition.y, transform.localPosition.z);
             pos = nextNode.Key.GetComponent<TileCost>().GetPos();
             Debug.Log("New pos: x" + newPosition.x + ", y " + newPosition.y);
             curNode = nextNode;
