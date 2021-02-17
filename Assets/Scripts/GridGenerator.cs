@@ -41,7 +41,7 @@ public class GridGenerator : MonoBehaviour
             {
                 chance = Random.Range(0f, 1f);
 
-                if (chance > .1f)
+                if (chance > .2f)
                 {        
                     // Create a new tile
                     GameObject tile = (GameObject)Instantiate(refGrassTile, transform);

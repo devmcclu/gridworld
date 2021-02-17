@@ -35,6 +35,7 @@ public class DijkstraSheep : MonoBehaviour
             }
         }
         // Move towards target
+        Debug.Log("Target node pos: " + targetNode.transform.localPosition);
         MovementGen();
     }
 
@@ -69,7 +70,8 @@ public class DijkstraSheep : MonoBehaviour
         Debug.Log("All movement nodes added");
         // While movement nodes not empty
         KeyValuePair<GameObject, int> curNode = startNode;
-        for (int i = 0; i < movementNodes.Keys.Count; i++)
+        //for (int i = 0; i < movementNodes.Keys.Count; i++)
+        while (movementNodes.Count > 0)
         {
             Debug.Log("Movement list size: " + movementNodes.Count);
             // curNode = lowest cost node
@@ -90,20 +92,21 @@ public class DijkstraSheep : MonoBehaviour
             if (!finalCostNodes.ContainsKey(curNode.Key))
             {
                 finalCostNodes.Add(curNode.Key, curNode.Value);
-            }
-            //for each adj node of curNode
-            foreach (KeyValuePair<GameObject, int> node in curNode.Key.GetComponent<TileCost>().adjacentTiles)
-            {
-                // if cost of curNode + move to adjNode cost < adjNode cost
-                if (movementNodes.ContainsKey(node.Key))
-                {
-                    if (curNode.Value + node.Value < movementNodes[node.Key])
-                    {
-                        // adjNode cost = cost of curNode + move to adjNode cost
-                        movementNodes[node.Key] = curNode.Value + node.Value;
-                    }
-                }
 
+                //for each adj node of curNode
+                foreach (KeyValuePair<GameObject, int> node in curNode.Key.GetComponent<TileCost>().adjacentTiles)
+                {
+                    // if cost of curNode + move to adjNode cost < adjNode cost
+                    if (movementNodes.ContainsKey(node.Key))
+                    {
+                        if (curNode.Value + node.Value < movementNodes[node.Key])
+                        {
+                            // adjNode cost = cost of curNode + move to adjNode cost
+                            movementNodes[node.Key] = curNode.Value + node.Value;
+                        }
+                    }
+
+                }
             }
             curNode = new KeyValuePair<GameObject, int>(tileArray[0, 0], System.Int32.MaxValue);
         }
@@ -138,7 +141,7 @@ public class DijkstraSheep : MonoBehaviour
             Debug.Log("New place");
 
             Vector3 newPosition = nextNode.Key.gameObject.transform.localPosition;
-            gameObject.transform.localPosition.Set(newPosition.x, newPosition.y, transform.localPosition.z);
+            gameObject.transform.localPosition = new Vector3(newPosition.x, newPosition.y, transform.localPosition.z);
             pos = nextNode.Key.GetComponent<TileCost>().GetPos();
             Debug.Log("New pos: x" + newPosition.x + ", y " + newPosition.y);
             curNode = nextNode;
