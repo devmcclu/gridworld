@@ -30,7 +30,9 @@ public class GridGenerator : MonoBehaviour
         // Get a tile to reference
         GameObject refTile = (GameObject)Instantiate(Resources.Load("GrassTile"));
         //GameObject refSheep = (GameObject)Instantiate(Resources.Load("rabbit"));
-        //float chance;
+        GameObject refSheep = (GameObject)Instantiate(Resources.Load("rabbitDijkstra"));
+        float chance;
+        bool hasSpawned = false;
         
         for (int curCol = 0; curCol < cols; curCol++)
         {
@@ -61,17 +63,19 @@ public class GridGenerator : MonoBehaviour
                     tileArray[curCol, curRow - 1].GetComponent<TileCost>().adjacentTiles.Add(tile, 1);
                 }
 
-                /* chance = Random.Range(0f, 1f);
-                if (chance > .7f)
+                chance = Random.Range(0f, 1f);
+                if (chance > .7f && !hasSpawned)
                 {
                     GameObject sheep = (GameObject)Instantiate(refSheep, transform);
                     sheep.transform.position = newPos; //+ new Vector2(0.5f, 0.5f);
-                } */                
+                    sheep.GetComponent<DijkstraSheep>().SetPos(curRow, curCol);
+                    hasSpawned = true;
+                }                
             }
         }
 
         Destroy(refTile);
-        //Destroy(refSheep);
+        Destroy(refSheep);
 
         float gridW = cols * tileSize;
         float gridL = rows * tileSize;
