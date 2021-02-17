@@ -5,7 +5,7 @@ using UnityEngine;
 public class DijkstraSheep : MonoBehaviour
 {
     // List of Grid objects
-    private GameObject[,] tileArray;
+    public GameObject[,] tileArray;
     // Object to move to
     private GameObject targetNode;
     // 2D Representation of position
@@ -13,28 +13,31 @@ public class DijkstraSheep : MonoBehaviour
     [SerializeField]
     private float moveTime = 2f;
 
-    void FindTarget()
+    public void FindTarget()
     {
-        // Go through list of grid objects
+        targetNode = tileArray[pos.x, pos.y];
+        //Go through list of grid objects
         for (int col = 0; col < tileArray.GetLength(0); col++)
         {
             for (int row = 0; row < tileArray.GetLength(1); row++)
             {
                 // If health of grass is < current object and > 0, set object as target
                 int newHealth = tileArray[col, row].GetComponent<TileController>().GetHealth();
-                int curHealth = targetNode.GetComponent<TileController>().GetHealth();
+                int curHealth = targetNode.GetComponent<TileController>().GetHealth();               
                 if (newHealth < curHealth && newHealth > 0)
                 {
                     targetNode = tileArray[col, row];
+                    Debug.Log("Target at col: " + col + ", row: " + row);
                 }
             }
         }
-        // Move towards target
+        //Move towards target
         MovementGen();
     }
 
     void MovementGen()
     {
+        Debug.Log("Start Movement gen");
         // Movement nodes
         Dictionary<GameObject, int> movementNodes = new Dictionary<GameObject, int>();
         Dictionary<GameObject, int> finalCostNodes = new Dictionary<GameObject, int>();
@@ -60,6 +63,7 @@ public class DijkstraSheep : MonoBehaviour
                 }
             }
         }
+        Debug.Log("All movement nodes added");
         // While movement nodes not empty
         KeyValuePair<GameObject, int> curNode = startNode;
         while (movementNodes.Count > 0)
@@ -74,7 +78,10 @@ public class DijkstraSheep : MonoBehaviour
             }
             // remove curNode from movementNode list
             movementNodes.Remove(curNode.Key);
-            finalCostNodes.Add(curNode.Key, curNode.Value);
+            if (!finalCostNodes.ContainsKey(curNode.Key))
+            {
+                finalCostNodes.Add(curNode.Key, curNode.Value);
+            }
             //for each adj node of curNode
             foreach (KeyValuePair<GameObject, int> node in curNode.Key.GetComponent<TileCost>().adjacentTiles)
             {
@@ -100,6 +107,7 @@ public class DijkstraSheep : MonoBehaviour
 
     IEnumerator StartMovement(Dictionary<GameObject, int> finalCostNodes, KeyValuePair<GameObject, int> curNode)
     {
+        Debug.Log("Start moving");
         KeyValuePair<GameObject, int> nextNode = new KeyValuePair<GameObject, int>(tileArray[0, 0], System.Int32.MaxValue);
         // While not to target
         while (curNode.Key != targetNode)
@@ -113,12 +121,15 @@ public class DijkstraSheep : MonoBehaviour
                     nextNode = node;
                 }
             }
+            Debug.Log("New place");
+
             Vector3 newPosition = nextNode.Key.gameObject.transform.position;
             transform.position.Set(newPosition.x, newPosition.y, transform.position.z);
             pos = nextNode.Key.GetComponent<TileCost>().GetPos();
             curNode = nextNode;
             yield return new WaitForSeconds(moveTime);
         }
+        Debug.Log("Done");
     }
 
     public void SetPos(int newX, int newY)

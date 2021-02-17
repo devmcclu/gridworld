@@ -80,5 +80,9 @@ public class GridGenerator : MonoBehaviour
         float gridW = cols * tileSize;
         float gridL = rows * tileSize;
         transform.position = new Vector2(-gridW / 2 + tileSize / 2, gridL / 2 - tileSize / 2);
+
+        DijkstraSheep curSheep = FindObjectOfType<DijkstraSheep>();
+        curSheep.tileArray = tileArray;
+        curSheep.FindTarget();
     }
 }
