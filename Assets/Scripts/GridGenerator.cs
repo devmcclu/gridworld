@@ -28,7 +28,8 @@ public class GridGenerator : MonoBehaviour
     void GenerateGrid()
     {
         // Get a tile to reference
-        GameObject refTile = (GameObject)Instantiate(Resources.Load("GrassTile"));
+        GameObject refGrassTile = (GameObject)Instantiate(Resources.Load("GrassTile"));
+        GameObject refWaterTile = (GameObject)Instantiate(Resources.Load("WaterTile"));
         //GameObject refSheep = (GameObject)Instantiate(Resources.Load("rabbit"));
         GameObject refSheep = (GameObject)Instantiate(Resources.Load("rabbitDijkstra"));
         float chance;
@@ -38,43 +39,70 @@ public class GridGenerator : MonoBehaviour
         {
             for (int curRow = 0; curRow < rows; curRow++)
             {
-                // Create a new tile
-                GameObject tile = (GameObject)Instantiate(refTile, transform);
-
-                //Get correct position with spacing
-                float posX = curCol * tileSize;
-                float posY = curRow * -tileSize;
-
-                //Set the position
-                Vector2 newPos = new Vector2(posX, posY);
-                tile.transform.position = newPos;
-                // Put tile in tileArray
-                tileArray[curCol, curRow] = tile;
-                tile.GetComponent<TileCost>().SetPos(curRow, curCol);
-
-                if (curCol > 0)
-                {
-                    tile.GetComponent<TileCost>().adjacentTiles.Add(tileArray[curCol - 1, curRow], 1);
-                    tileArray[curCol - 1, curRow].GetComponent<TileCost>().adjacentTiles.Add(tile, 1);
-                }
-                if (curRow > 0)
-                {
-                    tile.GetComponent<TileCost>().adjacentTiles.Add(tileArray[curCol, curRow - 1], 1);
-                    tileArray[curCol, curRow - 1].GetComponent<TileCost>().adjacentTiles.Add(tile, 1);
-                }
-
                 chance = Random.Range(0f, 1f);
-                if (chance > .7f && !hasSpawned)
+
+                if (chance > .1f)
+                {        
+                    // Create a new tile
+                    GameObject tile = (GameObject)Instantiate(refGrassTile, transform);
+
+                    //Get correct position with spacing
+                    float posX = curCol * tileSize;
+                    float posY = curRow * -tileSize;
+
+                    //Set the position
+                    Vector2 newPos = new Vector2(posX, posY);
+                    tile.transform.position = newPos;
+                    // Put tile in tileArray
+                    tileArray[curCol, curRow] = tile;
+                    tile.GetComponent<TileCost>().SetPos(curRow, curCol);
+
+                    if (curCol > 0)
+                    {
+                        if (tileArray[curCol - 1, curRow].TryGetComponent(typeof(TileController), out Component component))
+                        {
+                            tile.GetComponent<TileCost>().adjacentTiles.Add(tileArray[curCol - 1, curRow], 1);
+                            tileArray[curCol - 1, curRow].GetComponent<TileCost>().adjacentTiles.Add(tile, 1);
+                        }
+                    }
+                    if (curRow > 0)
+                    {
+                        if (tileArray[curCol, curRow - 1].TryGetComponent(typeof(TileController), out Component component))
+                        {
+                            tile.GetComponent<TileCost>().adjacentTiles.Add(tileArray[curCol, curRow - 1], 1);
+                            tileArray[curCol, curRow - 1].GetComponent<TileCost>().adjacentTiles.Add(tile, 1);
+                        }
+                    }
+
+                    chance = Random.Range(0f, 1f);
+                    if (chance > .7f && !hasSpawned)
+                    {
+                        GameObject sheep = (GameObject)Instantiate(refSheep, transform);
+                        sheep.transform.position = newPos; //+ new Vector2(0.5f, 0.5f);
+                        sheep.GetComponent<DijkstraSheep>().SetPos(curRow, curCol);
+                        hasSpawned = true;
+                    } 
+                }  
+                else
                 {
-                    GameObject sheep = (GameObject)Instantiate(refSheep, transform);
-                    sheep.transform.position = newPos; //+ new Vector2(0.5f, 0.5f);
-                    sheep.GetComponent<DijkstraSheep>().SetPos(curRow, curCol);
-                    hasSpawned = true;
-                }                
+                    // Create a new tile
+                    GameObject tile = (GameObject)Instantiate(refWaterTile, transform);
+
+                    //Get correct position with spacing
+                    float posX = curCol * tileSize;
+                    float posY = curRow * -tileSize;
+
+                    //Set the position
+                    Vector2 newPos = new Vector2(posX, posY);
+                    tile.transform.position = newPos;
+                    // Put tile in tileArray
+                    tileArray[curCol, curRow] = tile;
+                }             
             }
         }
 
-        Destroy(refTile);
+        Destroy(refGrassTile);
+        Destroy(refWaterTile);
         Destroy(refSheep);
 
         float gridW = cols * tileSize;
