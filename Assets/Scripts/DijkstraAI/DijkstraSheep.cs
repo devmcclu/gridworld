@@ -120,4 +120,14 @@ public class DijkstraSheep : MonoBehaviour
             yield return new WaitForSeconds(moveTime);
         }
     }
+
+    public void SetPos(int newX, int newY)
+    {
+        pos = new Vector2Int(newX, newY);
+    }
+
+    public Vector2Int GetPos()
+    {
+        return pos;
+    }
 }
