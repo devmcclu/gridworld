@@ -130,7 +130,7 @@ public class DijkstraSheep : MonoBehaviour
             finalCostNodes.Remove(curNode.Key);
             foreach (KeyValuePair<GameObject, int> node in finalCostNodes)
             {
-                if (node.Value < nextNode.Value)
+                if (node.Value < nextNode.Value && curNode.Key.GetComponent<TileCost>().adjacentTiles.ContainsKey(node.Key))
                 {
                     nextNode = node;
                 }
@@ -146,6 +146,7 @@ public class DijkstraSheep : MonoBehaviour
             yield return new WaitForSeconds(moveTime);
         }
         Debug.Log("Done");
+        FindTarget();
     }
 
     public void SetPos(int newX, int newY)
