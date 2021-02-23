@@ -43,9 +43,9 @@ public class ASheep : MonoBehaviour
     {
         Debug.Log("Start Movement gen");
         // Movement nodes
-        Dictionary<GameObject, int> movementNodes = new Dictionary<GameObject, int>();
-        Dictionary<GameObject, int> finalCostNodes = new Dictionary<GameObject, int>();
-        KeyValuePair<GameObject, int> startNode = new KeyValuePair<GameObject, int>(tileArray[0, 0], 0);
+        Dictionary<GameObject, int[]> openNodes = new Dictionary<GameObject, int[]>();
+        Dictionary<GameObject, int[]> closedNodes = new Dictionary<GameObject, int[]>();
+        KeyValuePair<GameObject, int[]> startNode = new KeyValuePair<GameObject, int[]>(tileArray[0, 0], new int[3]);
         // For all grid objects that are grass
         for (int col = 0; col < tileArray.GetLength(0); col++)
         {
@@ -57,69 +57,15 @@ public class ASheep : MonoBehaviour
                     // Set cost of cur tile to 0      
                     if(tileArray[col, row].GetComponent<TileCost>().GetPos().Equals(pos))
                     {
-                        movementNodes.Add(tileArray[col, row], 0);
-                        startNode = new KeyValuePair<GameObject, int>(tileArray[col, row], 0);
-                    }
-                    else
-                    {
-                        movementNodes.Add(tileArray[col, row], System.Int32.MaxValue);
+                        openNodes.Add(tileArray[col, row], new int[3]);
+                        startNode = new KeyValuePair<GameObject, int[]>(tileArray[col, row], new int[3]);
                     }
                 }
             }
         }
         Debug.Log("All movement nodes added");
-        // While movement nodes not empty
-        KeyValuePair<GameObject, int> curNode = startNode;
-        //for (int i = 0; i < movementNodes.Keys.Count; i++)
-        while (movementNodes.Count > 0)
-        {
-            Debug.Log("Movement list size: " + movementNodes.Count);
-            // curNode = lowest cost node
-            foreach (KeyValuePair<GameObject, int> entry in movementNodes)
-            {
-                if (entry.Value < curNode.Value)
-                {
-                    curNode = entry;
-                }
-            }
-            // remove curNode from movementNode list
-            while (movementNodes.ContainsKey(curNode.Key))
-            {
-                movementNodes.Remove(curNode.Key);
-            }
-            Debug.Log("Has current Node: " + movementNodes.ContainsKey(curNode.Key));
-
-            if (!finalCostNodes.ContainsKey(curNode.Key))
-            {
-                finalCostNodes.Add(curNode.Key, curNode.Value);
-
-                //for each adj node of curNode
-                foreach (KeyValuePair<GameObject, int> node in curNode.Key.GetComponent<TileCost>().adjacentTiles)
-                {
-                    // if cost of curNode + move to adjNode cost < adjNode cost
-                    if (movementNodes.ContainsKey(node.Key))
-                    {
-                        if (curNode.Value + node.Value < movementNodes[node.Key])
-                        {
-                            // adjNode cost = cost of curNode + move to adjNode cost
-                            movementNodes[node.Key] = curNode.Value + node.Value;
-                        }
-                    }
-
-                }
-            }
-            curNode = new KeyValuePair<GameObject, int>(tileArray[0, 0], System.Int32.MaxValue);
-        }
-    
-        foreach(KeyValuePair<GameObject, int> entry in finalCostNodes)
-        {
-            if (entry.Value < curNode.Value)
-            {
-                curNode = entry;
-            }
-        }
         
-        StartCoroutine(StartMovement(finalCostNodes, curNode));
+        //StartCoroutine(StartMovement(finalCostNodes, curNode));
     }
 
     IEnumerator StartMovement(Dictionary<GameObject, int> finalCostNodes, KeyValuePair<GameObject, int> curNode)
