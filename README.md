@@ -1,6 +1,6 @@
 # Gridworld
 
-First project for MSCH-G 488 Artificial Intelligence for Games
+Projects for MSCH-G 488 Artificial Intelligence for Games
 
 Simulation of "sheep" and "grass".
 The sheep can move towards other sheep, create new sheep, move towards and eat grass, and wonder around.
