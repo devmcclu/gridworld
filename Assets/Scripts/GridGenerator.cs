@@ -75,6 +75,15 @@ public class GridGenerator : MonoBehaviour
                         }
                     }
 
+                    if (curRow > 0 && curCol > 0)
+                    {
+                        if (tileArray[curCol - 1, curRow - 1].TryGetComponent(typeof(TileController), out Component component))
+                        {
+                            tile.GetComponent<TileCost>().adjacentTiles.Add(tileArray[curCol - 1, curRow - 1], 1);
+                            tileArray[curCol - 1, curRow - 1].GetComponent<TileCost>().adjacentTiles.Add(tile, 1);
+                        }
+                    }
+
                     chance = Random.Range(0f, 1f);
                     if (chance > .7f && !hasSpawned)
                     {

@@ -141,7 +141,14 @@ public class ASheep : MonoBehaviour
                 if (skipped == false)
                 {
                     Debug.Log("New candidate");
-                    openNodes.Add(neighborNode.Key, neighborNode.Value);
+                    if (openNodes.ContainsKey(neighborNode.Key))
+                    {
+                        openNodes[neighborNode.Key] = neighborNode.Value;
+                    }
+                    else
+                    {
+                        openNodes.Add(neighborNode.Key, neighborNode.Value);
+                    }
                 }
 
             }
@@ -149,7 +156,15 @@ public class ASheep : MonoBehaviour
             {
                 break;
             }
-            closedNodes.Add(curNode.Key, curNode.Value);
+
+            if (closedNodes.ContainsKey(curNode.Key))
+            {
+                closedNodes[curNode.Key] = curNode.Value;    
+            }
+            else
+            {
+                closedNodes.Add(curNode.Key, curNode.Value);
+            }
             curNode = new KeyValuePair<GameObject, int[]>(startNode.Key, new int[2] {0, System.Int32.MaxValue});
         }
         StartCoroutine(StartMovement(finalNode, startNode.Key.GetComponent<TileCost>()));
