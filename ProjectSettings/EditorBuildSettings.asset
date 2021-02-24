@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/DijkstraScene.unity
+    path: Assets/Scenes/DijkstraScene.unity
     guid: 030002145d55cfb4a9166b66d8fafdbd
   m_configObjects: {}

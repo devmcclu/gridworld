@@ -29,4 +29,9 @@ public class TileCost : MonoBehaviour
     {
         parentNode = parent;
     }
+
+    public TileCost GetParentNode()
+    {
+        return parentNode;
+    }
 }

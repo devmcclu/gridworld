@@ -73,7 +73,7 @@ public class ASheep : MonoBehaviour
         Debug.Log("Start node added");
 
         KeyValuePair<GameObject, int[]> curNode = startNode;
-        
+        TileCost finalNode = curNode.Key.GetComponent<TileCost>();
         // Go through each optimal node path
         while (openNodes.Count > 0)
         {
@@ -89,40 +89,86 @@ public class ASheep : MonoBehaviour
             // Remove the lowest code node from open nodes
             openNodes.Remove(curNode.Key);
 
+            // Set parents of each neighbor
             foreach (KeyValuePair<GameObject, int> entry in curNode.Key.GetComponent<TileCost>().adjacentTiles)
             {
-                
+                entry.Key.GetComponent<TileCost>().SetParentNode(curNode.Key.GetComponent<TileCost>());
             }
+
+            // Go through each neighbor
+            foreach (KeyValuePair<GameObject, int> entry in curNode.Key.GetComponent<TileCost>().adjacentTiles)
+            {
+                bool skipped = false;
+
+                // Found target node
+                if (entry.Key == targetNode)
+                {
+                    finalNode = entry.Key.GetComponent<TileCost>();
+                    break;
+                }
+
+                // Current neightbor values
+                int heuristic = Heuristic(entry.Key.GetComponent<TileCost>().GetPos());
+                int[] cost = {curNode.Value[0] + entry.Value, heuristic};
+
+                KeyValuePair<GameObject, int[]> neighborNode = new KeyValuePair<GameObject, int[]>(entry.Key, cost);
+
+                // See if we have better candidate
+                foreach (KeyValuePair<GameObject, int[]> opened in openNodes)
+                {
+                    if (opened.Value[0] + opened.Value[1] < neighborNode.Value[0] + neighborNode.Value[1])
+                    {
+                        skipped = true;
+                        break;
+                    }
+                }
+
+                // See if we have better path
+                foreach (KeyValuePair<GameObject, int[]> closed in closedNodes)
+                {
+                    if (closed.Value[0] + closed.Value[1] < neighborNode.Value[0] + neighborNode.Value[1])
+                    {
+                        skipped = true;
+                        break;
+                    }
+                }
+
+                if (skipped == false)
+                {
+                    openNodes.Add(neighborNode.Key, neighborNode.Value);
+                }
+            }
+
+            closedNodes.Add(curNode.Key, curNode.Value);
         }
         //StartCoroutine(StartMovement(finalCostNodes, curNode));
     }
 
-    IEnumerator StartMovement(Dictionary<GameObject, int> finalCostNodes, KeyValuePair<GameObject, int> curNode)
+    IEnumerator StartMovement(TileCost finalNode)
     {
-        Debug.Log("Start moving");
-        KeyValuePair<GameObject, int> nextNode = new KeyValuePair<GameObject, int>(tileArray[0, 0], System.Int32.MaxValue);
-        // While not to target
-        while (curNode.Key != targetNode)
+        Debug.Log("Find start node");
+        TileCost startNode = finalNode;
+        Stack<TileCost> movementNodes = new Stack<TileCost>();
+
+        while(startNode.GetParentNode() != null)
         {
-            // From curNode, go to lowest cost node
-            finalCostNodes.Remove(curNode.Key);
-            foreach (KeyValuePair<GameObject, int> node in finalCostNodes)
-            {
-                if (node.Value < nextNode.Value && curNode.Key.GetComponent<TileCost>().adjacentTiles.ContainsKey(node.Key))
-                {
-                    nextNode = node;
-                }
-            }
+            movementNodes.Push(finalNode);
+            startNode = finalNode.GetParentNode();
+        }
+
+        while(movementNodes.Count > 0)
+        {
             Debug.Log("New place");
 
-            Vector3 newPosition = nextNode.Key.gameObject.transform.localPosition;
+            TileCost nextNode = movementNodes.Pop();
+
+            Vector3 newPosition = nextNode.gameObject.transform.localPosition;
             gameObject.transform.localPosition = new Vector3(newPosition.x, newPosition.y, transform.localPosition.z);
-            pos = nextNode.Key.GetComponent<TileCost>().GetPos();
+            pos = nextNode.GetPos();
             Debug.Log("New pos: x" + newPosition.x + ", y " + newPosition.y);
-            curNode = nextNode;
-            nextNode = new KeyValuePair<GameObject, int>(tileArray[0, 0], System.Int32.MaxValue);
             yield return new WaitForSeconds(moveTime);
         }
+
         Debug.Log("Done");
         FindTarget();
     }
