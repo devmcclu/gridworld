@@ -13,7 +13,7 @@ public class TileCost : MonoBehaviour
     [SerializeField]
     private TileCost parentNode;
     // Dictionary: Adj tile w/cost to move to
-    public Dictionary<GameObject, int> adjacentTiles = new Dictionary<GameObject, int>();
+    public Dictionary<GameObject, float> adjacentTiles = new Dictionary<GameObject, float>();
 
     public void SetPos(int newX, int newY)
     {

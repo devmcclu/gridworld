@@ -52,9 +52,9 @@ public class ASheep : MonoBehaviour
 
         Debug.Log("Start Movement gen");
         // Movement nodes
-        Dictionary<GameObject, int[]> openNodes = new Dictionary<GameObject, int[]>();
-        Dictionary<GameObject, int[]> closedNodes = new Dictionary<GameObject, int[]>();
-        KeyValuePair<GameObject, int[]> startNode = new KeyValuePair<GameObject, int[]>(tileArray[0, 0], new int[2]);
+        Dictionary<GameObject, float[]> openNodes = new Dictionary<GameObject, float[]>();
+        Dictionary<GameObject, float[]> closedNodes = new Dictionary<GameObject, float[]>();
+        KeyValuePair<GameObject, float[]> startNode = new KeyValuePair<GameObject, float[]>(tileArray[0, 0], new float[2]);
 
         targetNodePos = targetNode.GetComponent<TileCost>().GetPos();
         // For all grid objects that are grass
@@ -68,10 +68,10 @@ public class ASheep : MonoBehaviour
                     // Set cost of cur tile to 0      
                     if(tileArray[col, row].GetComponent<TileCost>().GetPos().Equals(pos))
                     {
-                        int heuristic = Heuristic(tileArray[col, row].GetComponent<TileCost>().GetPos());
-                        int[] cost = {0, heuristic};
+                        float heuristic = Heuristic(tileArray[col, row].GetComponent<TileCost>().GetPos());
+                        float[] cost = {0, heuristic};
                         openNodes.Add(tileArray[col, row], cost);
-                        startNode = new KeyValuePair<GameObject, int[]>(tileArray[col, row], cost);
+                        startNode = new KeyValuePair<GameObject, float[]>(tileArray[col, row], cost);
                         break;
                     }
                 }
@@ -79,14 +79,14 @@ public class ASheep : MonoBehaviour
         }
         Debug.Log("Start node added");
 
-        KeyValuePair<GameObject, int[]> curNode = startNode;
+        KeyValuePair<GameObject, float[]> curNode = startNode;
         TileCost finalNode = curNode.Key.GetComponent<TileCost>();
         // Go through each optimal node path
         while (openNodes.Count > 0)
         {
             bool targetFound = false;
             // Find the lowest cost node
-            foreach (KeyValuePair<GameObject, int[]> entry in openNodes)
+            foreach (KeyValuePair<GameObject, float[]> entry in openNodes)
             {
                 if (entry.Value[0] + entry.Value[1] < curNode.Value[0] + curNode.Value[1])
                 {
@@ -98,7 +98,7 @@ public class ASheep : MonoBehaviour
             openNodes.Remove(curNode.Key);
             Debug.Log("curNode closed");
             // Set parents of each neighbor
-            foreach (KeyValuePair<GameObject, int> entry in curNode.Key.GetComponent<TileCost>().adjacentTiles)
+            foreach (KeyValuePair<GameObject, float> entry in curNode.Key.GetComponent<TileCost>().adjacentTiles)
             {
                 entry.Key.GetComponent<TileCost>().SetParentNode(curNode.Key.GetComponent<TileCost>());
             }
@@ -106,7 +106,7 @@ public class ASheep : MonoBehaviour
             Debug.Log("Found all neightbors");
 
             // Go through each neighbor
-            foreach (KeyValuePair<GameObject, int> entry in curNode.Key.GetComponent<TileCost>().adjacentTiles)
+            foreach (KeyValuePair<GameObject, float> entry in curNode.Key.GetComponent<TileCost>().adjacentTiles)
             {
                 bool skipped = false;
 
@@ -120,13 +120,13 @@ public class ASheep : MonoBehaviour
                 }
 
                 // Current neightbor values
-                int heuristic = Heuristic(entry.Key.GetComponent<TileCost>().GetPos());
-                int[] cost = {curNode.Value[0] + entry.Value, heuristic};
+                float heuristic = Heuristic(entry.Key.GetComponent<TileCost>().GetPos());
+                float[] cost = {curNode.Value[0] + entry.Value, heuristic};
 
-                KeyValuePair<GameObject, int[]> neighborNode = new KeyValuePair<GameObject, int[]>(entry.Key, cost);
+                KeyValuePair<GameObject, float[]> neighborNode = new KeyValuePair<GameObject, float[]>(entry.Key, cost);
 
                 // See if we have better candidate
-                foreach (KeyValuePair<GameObject, int[]> opened in openNodes)
+                foreach (KeyValuePair<GameObject, float[]> opened in openNodes)
                 {
                     if (opened.Value[0] + opened.Value[1] < neighborNode.Value[0] + neighborNode.Value[1])
                     {
@@ -136,7 +136,7 @@ public class ASheep : MonoBehaviour
                 }
 
                 // See if we have better path
-                foreach (KeyValuePair<GameObject, int[]> closed in closedNodes)
+                foreach (KeyValuePair<GameObject, float[]> closed in closedNodes)
                 {
                     if (closed.Value[0] + closed.Value[1] < neighborNode.Value[0] + neighborNode.Value[1])
                     {
@@ -164,15 +164,15 @@ public class ASheep : MonoBehaviour
                 break;
             }
 
-            if (closedNodes.ContainsKey(curNode.Key))
-            {
-                closedNodes[curNode.Key] = curNode.Value;    
-            }
-            else
-            {
-                closedNodes.Add(curNode.Key, curNode.Value);
-            }
-            curNode = new KeyValuePair<GameObject, int[]>(startNode.Key, new int[2] {0, System.Int32.MaxValue});
+            // if (closedNodes.ContainsKey(curNode.Key))
+            // {
+            //     closedNodes[curNode.Key] = curNode.Value;    
+            // }
+            // else
+            // {
+            //     closedNodes.Add(curNode.Key, curNode.Value);
+            // }
+            curNode = new KeyValuePair<GameObject, float[]>(startNode.Key, new float[2] {0, System.Int32.MaxValue});
         }
         StartCoroutine(StartMovement(finalNode, startNode.Key.GetComponent<TileCost>()));
     }
@@ -206,7 +206,7 @@ public class ASheep : MonoBehaviour
         FindTarget();
     }
 
-    int Heuristic(Vector2Int pos)
+    float Heuristic(Vector2Int pos)
     {
         return Mathf.Abs(targetNodePos.x - pos.x) + Mathf.Abs(targetNodePos.y - pos.y);
     }

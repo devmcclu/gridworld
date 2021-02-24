@@ -62,16 +62,16 @@ public class GridGenerator : MonoBehaviour
                     {
                         if (tileArray[curCol - 1, curRow].TryGetComponent(typeof(TileController), out Component component))
                         {
-                            tile.GetComponent<TileCost>().adjacentTiles.Add(tileArray[curCol - 1, curRow], 1);
-                            tileArray[curCol - 1, curRow].GetComponent<TileCost>().adjacentTiles.Add(tile, 1);
+                            tile.GetComponent<TileCost>().adjacentTiles.Add(tileArray[curCol - 1, curRow], 1f);
+                            tileArray[curCol - 1, curRow].GetComponent<TileCost>().adjacentTiles.Add(tile, 1f);
                         }
                     }
                     if (curRow > 0)
                     {
                         if (tileArray[curCol, curRow - 1].TryGetComponent(typeof(TileController), out Component component))
                         {
-                            tile.GetComponent<TileCost>().adjacentTiles.Add(tileArray[curCol, curRow - 1], 1);
-                            tileArray[curCol, curRow - 1].GetComponent<TileCost>().adjacentTiles.Add(tile, 1);
+                            tile.GetComponent<TileCost>().adjacentTiles.Add(tileArray[curCol, curRow - 1], 1f);
+                            tileArray[curCol, curRow - 1].GetComponent<TileCost>().adjacentTiles.Add(tile, 1f);
                         }
                     }
 
@@ -79,8 +79,8 @@ public class GridGenerator : MonoBehaviour
                     {
                         if (tileArray[curCol - 1, curRow - 1].TryGetComponent(typeof(TileController), out Component component))
                         {
-                            tile.GetComponent<TileCost>().adjacentTiles.Add(tileArray[curCol - 1, curRow - 1], 1);
-                            tileArray[curCol - 1, curRow - 1].GetComponent<TileCost>().adjacentTiles.Add(tile, 1);
+                            tile.GetComponent<TileCost>().adjacentTiles.Add(tileArray[curCol - 1, curRow - 1], 1.5f);
+                            tileArray[curCol - 1, curRow - 1].GetComponent<TileCost>().adjacentTiles.Add(tile, 1.5f);
                         }
                     }
 

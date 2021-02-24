@@ -50,9 +50,9 @@ public class DijkstraSheep : MonoBehaviour
     {
         Debug.Log("Start Movement gen");
         // Movement nodes
-        Dictionary<GameObject, int> movementNodes = new Dictionary<GameObject, int>();
-        Dictionary<GameObject, int> finalCostNodes = new Dictionary<GameObject, int>();
-        KeyValuePair<GameObject, int> startNode = new KeyValuePair<GameObject, int>(tileArray[0, 0], 0);
+        Dictionary<GameObject, float> movementNodes = new Dictionary<GameObject, float>();
+        Dictionary<GameObject, float> finalCostNodes = new Dictionary<GameObject, float>();
+        KeyValuePair<GameObject, float> startNode = new KeyValuePair<GameObject, float>(tileArray[0, 0], 0);
         // For all grid objects that are grass
         for (int col = 0; col < tileArray.GetLength(0); col++)
         {
@@ -65,7 +65,7 @@ public class DijkstraSheep : MonoBehaviour
                     if(tileArray[col, row].GetComponent<TileCost>().GetPos().Equals(pos))
                     {
                         movementNodes.Add(tileArray[col, row], 0);
-                        startNode = new KeyValuePair<GameObject, int>(tileArray[col, row], 0);
+                        startNode = new KeyValuePair<GameObject, float>(tileArray[col, row], 0);
                     }
                     else
                     {
@@ -76,13 +76,13 @@ public class DijkstraSheep : MonoBehaviour
         }
         Debug.Log("All movement nodes added");
         // While movement nodes not empty
-        KeyValuePair<GameObject, int> curNode = startNode;
+        KeyValuePair<GameObject, float> curNode = startNode;
         //for (int i = 0; i < movementNodes.Keys.Count; i++)
         while (movementNodes.Count > 0)
         {
             Debug.Log("Movement list size: " + movementNodes.Count);
             // curNode = lowest cost node
-            foreach (KeyValuePair<GameObject, int> entry in movementNodes)
+            foreach (KeyValuePair<GameObject, float> entry in movementNodes)
             {
                 if (entry.Value < curNode.Value)
                 {
@@ -101,7 +101,7 @@ public class DijkstraSheep : MonoBehaviour
                 finalCostNodes.Add(curNode.Key, curNode.Value);
 
                 //for each adj node of curNode
-                foreach (KeyValuePair<GameObject, int> node in curNode.Key.GetComponent<TileCost>().adjacentTiles)
+                foreach (KeyValuePair<GameObject, float> node in curNode.Key.GetComponent<TileCost>().adjacentTiles)
                 {
                     // if cost of curNode + move to adjNode cost < adjNode cost
                     if (movementNodes.ContainsKey(node.Key))
@@ -115,10 +115,10 @@ public class DijkstraSheep : MonoBehaviour
 
                 }
             }
-            curNode = new KeyValuePair<GameObject, int>(tileArray[0, 0], System.Int32.MaxValue);
+            curNode = new KeyValuePair<GameObject, float>(tileArray[0, 0], System.Int32.MaxValue);
         }
     
-        foreach(KeyValuePair<GameObject, int> entry in finalCostNodes)
+        foreach(KeyValuePair<GameObject, float> entry in finalCostNodes)
         {
             if (entry.Value < curNode.Value)
             {
@@ -129,16 +129,16 @@ public class DijkstraSheep : MonoBehaviour
         StartCoroutine(StartMovement(finalCostNodes, curNode));
     }
 
-    IEnumerator StartMovement(Dictionary<GameObject, int> finalCostNodes, KeyValuePair<GameObject, int> curNode)
+    IEnumerator StartMovement(Dictionary<GameObject, float> finalCostNodes, KeyValuePair<GameObject, float> curNode)
     {
         Debug.Log("Start moving");
-        KeyValuePair<GameObject, int> nextNode = new KeyValuePair<GameObject, int>(tileArray[0, 0], System.Int32.MaxValue);
+        KeyValuePair<GameObject, float> nextNode = new KeyValuePair<GameObject, float>(tileArray[0, 0], System.Int32.MaxValue);
         // While not to target
         while (curNode.Key != targetNode)
         {
             // From curNode, go to lowest cost node
             finalCostNodes.Remove(curNode.Key);
-            foreach (KeyValuePair<GameObject, int> node in finalCostNodes)
+            foreach (KeyValuePair<GameObject, float> node in finalCostNodes)
             {
                 if (node.Value < nextNode.Value && curNode.Key.GetComponent<TileCost>().adjacentTiles.ContainsKey(node.Key))
                 {
@@ -152,7 +152,7 @@ public class DijkstraSheep : MonoBehaviour
             pos = nextNode.Key.GetComponent<TileCost>().GetPos();
             Debug.Log("New pos: x" + newPosition.x + ", y " + newPosition.y);
             curNode = nextNode;
-            nextNode = new KeyValuePair<GameObject, int>(tileArray[0, 0], System.Int32.MaxValue);
+            nextNode = new KeyValuePair<GameObject, float>(tileArray[0, 0], System.Int32.MaxValue);
             yield return new WaitForSeconds(moveTime);
         }
         Debug.Log("Done");
