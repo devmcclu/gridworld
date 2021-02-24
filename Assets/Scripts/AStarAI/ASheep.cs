@@ -77,6 +77,7 @@ public class ASheep : MonoBehaviour
         // Go through each optimal node path
         while (openNodes.Count > 0)
         {
+            bool targetFound = false;
             // Find the lowest cost node
             foreach (KeyValuePair<GameObject, int[]> entry in openNodes)
             {
@@ -88,12 +89,14 @@ public class ASheep : MonoBehaviour
 
             // Remove the lowest code node from open nodes
             openNodes.Remove(curNode.Key);
-
+            Debug.Log("curNode closed");
             // Set parents of each neighbor
             foreach (KeyValuePair<GameObject, int> entry in curNode.Key.GetComponent<TileCost>().adjacentTiles)
             {
                 entry.Key.GetComponent<TileCost>().SetParentNode(curNode.Key.GetComponent<TileCost>());
             }
+
+            Debug.Log("Found all neightbors");
 
             // Go through each neighbor
             foreach (KeyValuePair<GameObject, int> entry in curNode.Key.GetComponent<TileCost>().adjacentTiles)
@@ -104,6 +107,8 @@ public class ASheep : MonoBehaviour
                 if (entry.Key == targetNode)
                 {
                     finalNode = entry.Key.GetComponent<TileCost>();
+                    targetFound = true;
+                    Debug.Log("FOund target node");
                     break;
                 }
 
@@ -135,13 +140,19 @@ public class ASheep : MonoBehaviour
 
                 if (skipped == false)
                 {
+                    Debug.Log("New candidate");
                     openNodes.Add(neighborNode.Key, neighborNode.Value);
                 }
-            }
 
+            }
+            if (targetFound)
+            {
+                break;
+            }
             closedNodes.Add(curNode.Key, curNode.Value);
+            curNode = new KeyValuePair<GameObject, int[]>(startNode.Key, new int[2] {0, System.Int32.MaxValue});
         }
-        //StartCoroutine(StartMovement(finalCostNodes, curNode));
+        StartCoroutine(StartMovement(finalNode));
     }
 
     IEnumerator StartMovement(TileCost finalNode)

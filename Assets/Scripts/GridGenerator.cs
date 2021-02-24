@@ -31,7 +31,8 @@ public class GridGenerator : MonoBehaviour
         GameObject refGrassTile = (GameObject)Instantiate(Resources.Load("GrassTile"));
         GameObject refWaterTile = (GameObject)Instantiate(Resources.Load("WaterTile"));
         //GameObject refSheep = (GameObject)Instantiate(Resources.Load("rabbit"));
-        GameObject refSheep = (GameObject)Instantiate(Resources.Load("rabbitDijkstra"));
+        //GameObject refSheep = (GameObject)Instantiate(Resources.Load("rabbitDijkstra"));
+        GameObject refSheep = (GameObject)Instantiate(Resources.Load("rabbitAStar"));
         float chance;
         bool hasSpawned = false;
         
@@ -79,7 +80,8 @@ public class GridGenerator : MonoBehaviour
                     {
                         GameObject sheep = (GameObject)Instantiate(refSheep, transform);
                         sheep.transform.position = newPos; //+ new Vector2(0.5f, 0.5f);
-                        sheep.GetComponent<DijkstraSheep>().SetPos(curRow, curCol);
+                        //sheep.GetComponent<DijkstraSheep>().SetPos(curRow, curCol);
+                        sheep.GetComponent<ASheep>().SetPos(curRow, curCol);
                         hasSpawned = true;
                     } 
                 }  
@@ -109,7 +111,8 @@ public class GridGenerator : MonoBehaviour
         float gridL = rows * tileSize;
         transform.position = new Vector2(-gridW / 2 + tileSize / 2, gridL / 2 - tileSize / 2);
 
-        DijkstraSheep curSheep = FindObjectOfType<DijkstraSheep>();
+        // DijkstraSheep curSheep = FindObjectOfType<DijkstraSheep>();
+        ASheep curSheep = FindObjectOfType<ASheep>();
         curSheep.tileArray = tileArray;
         curSheep.FindTarget();
     }
