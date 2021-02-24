@@ -152,19 +152,19 @@ public class ASheep : MonoBehaviour
             closedNodes.Add(curNode.Key, curNode.Value);
             curNode = new KeyValuePair<GameObject, int[]>(startNode.Key, new int[2] {0, System.Int32.MaxValue});
         }
-        StartCoroutine(StartMovement(finalNode));
+        StartCoroutine(StartMovement(finalNode, startNode.Key.GetComponent<TileCost>()));
     }
 
-    IEnumerator StartMovement(TileCost finalNode)
+    IEnumerator StartMovement(TileCost finalNode, TileCost startNode)
     {
         Debug.Log("Find start node");
-        TileCost startNode = finalNode;
         Stack<TileCost> movementNodes = new Stack<TileCost>();
+        TileCost newNode = finalNode;
 
-        while(startNode.GetParentNode() != null)
+        while(newNode.GetParentNode() != startNode)
         {
             movementNodes.Push(finalNode);
-            startNode = finalNode.GetParentNode();
+            newNode = finalNode.GetParentNode();
         }
 
         while(movementNodes.Count > 0)
