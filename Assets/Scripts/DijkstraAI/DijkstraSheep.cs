@@ -15,13 +15,20 @@ public class DijkstraSheep : MonoBehaviour
 
     public void FindTarget()
     {
-        targetNode = tileArray[pos.x, pos.y];
+        if (tileArray[pos.x, pos.y].TryGetComponent(typeof(TileController), out Component component))
+        {
+            targetNode = tileArray[pos.x, pos.y];
+        }
+        else
+        {
+            targetNode = tileArray[0, 0];
+        }
         // Go through list of grid objects
         for (int col = 0; col < tileArray.GetLength(0); col++)
         {
             for (int row = 0; row < tileArray.GetLength(1); row++)
             {
-                if(tileArray[col, row].TryGetComponent(typeof(TileController), out Component component))
+                if(tileArray[col, row].TryGetComponent(typeof(TileController), out Component component2))
                 {
                     // If health of grass is < current object and > 0, set object as target
                     int newHealth = tileArray[col, row].GetComponent<TileController>().GetHealth();
