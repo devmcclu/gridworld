@@ -10,6 +10,8 @@ public class TileCost : MonoBehaviour
     // Where in the array the tile is
     [SerializeField]
     private Vector2Int pos;
+    [SerializeField]
+    private TileCost parentNode;
     // Dictionary: Adj tile w/cost to move to
     public Dictionary<GameObject, int> adjacentTiles = new Dictionary<GameObject, int>();
 
@@ -21,5 +23,10 @@ public class TileCost : MonoBehaviour
     public Vector2Int GetPos()
     {
         return pos;
+    }
+
+    public void SetParentNode(TileCost parent)
+    {
+        parentNode = parent;
     }
 }

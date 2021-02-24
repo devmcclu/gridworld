@@ -8,6 +8,7 @@ public class ASheep : MonoBehaviour
     public GameObject[,] tileArray;
     // Object to move to
     private GameObject targetNode;
+    private Vector2Int targetNodePos;
     // 2D Representation of position
     private Vector2Int pos;
     [SerializeField]
@@ -41,11 +42,14 @@ public class ASheep : MonoBehaviour
 
     void MovementGen()
     {
+
         Debug.Log("Start Movement gen");
         // Movement nodes
         Dictionary<GameObject, int[]> openNodes = new Dictionary<GameObject, int[]>();
         Dictionary<GameObject, int[]> closedNodes = new Dictionary<GameObject, int[]>();
-        KeyValuePair<GameObject, int[]> startNode = new KeyValuePair<GameObject, int[]>(tileArray[0, 0], new int[3]);
+        KeyValuePair<GameObject, int[]> startNode = new KeyValuePair<GameObject, int[]>(tileArray[0, 0], new int[2]);
+
+        targetNodePos = targetNode.GetComponent<TileCost>().GetPos();
         // For all grid objects that are grass
         for (int col = 0; col < tileArray.GetLength(0); col++)
         {
@@ -57,14 +61,39 @@ public class ASheep : MonoBehaviour
                     // Set cost of cur tile to 0      
                     if(tileArray[col, row].GetComponent<TileCost>().GetPos().Equals(pos))
                     {
-                        openNodes.Add(tileArray[col, row], new int[3]);
-                        startNode = new KeyValuePair<GameObject, int[]>(tileArray[col, row], new int[3]);
+                        int heuristic = Heuristic(tileArray[col, row].GetComponent<TileCost>().GetPos());
+                        int[] cost = {0, heuristic};
+                        openNodes.Add(tileArray[col, row], cost);
+                        startNode = new KeyValuePair<GameObject, int[]>(tileArray[col, row], cost);
+                        break;
                     }
                 }
             }
         }
-        Debug.Log("All movement nodes added");
+        Debug.Log("Start node added");
+
+        KeyValuePair<GameObject, int[]> curNode = startNode;
         
+        // Go through each optimal node path
+        while (openNodes.Count > 0)
+        {
+            // Find the lowest cost node
+            foreach (KeyValuePair<GameObject, int[]> entry in openNodes)
+            {
+                if (entry.Value[0] + entry.Value[1] < curNode.Value[0] + curNode.Value[1])
+                {
+                    curNode = entry;
+                }
+            }
+
+            // Remove the lowest code node from open nodes
+            openNodes.Remove(curNode.Key);
+
+            foreach (KeyValuePair<GameObject, int> entry in curNode.Key.GetComponent<TileCost>().adjacentTiles)
+            {
+                
+            }
+        }
         //StartCoroutine(StartMovement(finalCostNodes, curNode));
     }
 
@@ -96,6 +125,11 @@ public class ASheep : MonoBehaviour
         }
         Debug.Log("Done");
         FindTarget();
+    }
+
+    int Heuristic(Vector2Int pos)
+    {
+        return Mathf.Abs(targetNodePos.x - pos.x) + Mathf.Abs(targetNodePos.y - pos.y);
     }
 
     public void SetPos(int newX, int newY)
