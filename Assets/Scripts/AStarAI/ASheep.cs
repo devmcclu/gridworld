@@ -88,7 +88,7 @@ public class ASheep : MonoBehaviour
             // Find the lowest cost node
             foreach (KeyValuePair<GameObject, float[]> entry in openNodes)
             {
-                if (entry.Value[0] + entry.Value[1] < curNode.Value[0] + curNode.Value[1])
+                if (entry.Value[0] + entry.Value[1] < curNode.Value[0] + curNode.Value[1] && !closedNodes.ContainsKey(entry.Key))
                 {
                     curNode = entry;
                 }
@@ -97,6 +97,7 @@ public class ASheep : MonoBehaviour
             // Remove the lowest code node from open nodes
             openNodes.Remove(curNode.Key);
             Debug.Log("curNode closed");
+            
             // Set parents of each neighbor
             foreach (KeyValuePair<GameObject, float> entry in curNode.Key.GetComponent<TileCost>().adjacentTiles)
             {
@@ -164,6 +165,8 @@ public class ASheep : MonoBehaviour
                 break;
             }
 
+            closedNodes.Add(curNode.Key, curNode.Value);
+
             // if (closedNodes.ContainsKey(curNode.Key))
             // {
             //     closedNodes[curNode.Key] = curNode.Value;    
@@ -174,7 +177,19 @@ public class ASheep : MonoBehaviour
             // }
             curNode = new KeyValuePair<GameObject, float[]>(startNode.Key, new float[2] {0, System.Int32.MaxValue});
         }
-        StartCoroutine(StartMovement(finalNode, startNode.Key.GetComponent<TileCost>()));
+
+        closedNodes.Clear();
+        openNodes.Clear();
+
+        if (finalNode == startNode.Key.GetComponent<TileCost>())
+        {
+            Debug.Log("Failure, start over");
+            FindTarget();
+        }
+        else
+        {
+            StartCoroutine(StartMovement(finalNode, startNode.Key.GetComponent<TileCost>()));
+        }
     }
 
     IEnumerator StartMovement(TileCost finalNode, TileCost startNode)
