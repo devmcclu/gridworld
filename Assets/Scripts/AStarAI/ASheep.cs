@@ -72,12 +72,13 @@ public class ASheep : MonoBehaviour
                         float[] cost = {0, heuristic};
                         openNodes.Add(tileArray[col, row], cost);
                         startNode = new KeyValuePair<GameObject, float[]>(tileArray[col, row], cost);
+                        Debug.Log("Start node added");
                         break;
                     }
                 }
             }
         }
-        Debug.Log("Start node added");
+        Debug.Log("Start node found");
 
         KeyValuePair<GameObject, float[]> curNode = startNode;
         TileCost finalNode = curNode.Key.GetComponent<TileCost>();
@@ -85,6 +86,10 @@ public class ASheep : MonoBehaviour
         while (openNodes.Count > 0)
         {
             bool targetFound = false;
+            // Set current node to a node that is open
+            var openEnum = openNodes.GetEnumerator();
+            openEnum.MoveNext();
+            curNode = openEnum.Current;
             // Find the lowest cost node
             foreach (KeyValuePair<GameObject, float[]> entry in openNodes)
             {
@@ -97,7 +102,9 @@ public class ASheep : MonoBehaviour
             // Remove the lowest code node from open nodes
             openNodes.Remove(curNode.Key);
             Debug.Log("curNode closed");
-            
+            closedNodes.Add(curNode.Key, curNode.Value);
+            Debug.Assert(!openNodes.ContainsKey(curNode.Key));
+
             // Set parents of each neighbor
             foreach (KeyValuePair<GameObject, float> entry in curNode.Key.GetComponent<TileCost>().adjacentTiles)
             {
@@ -131,6 +138,7 @@ public class ASheep : MonoBehaviour
                 {
                     if (opened.Value[0] + opened.Value[1] < neighborNode.Value[0] + neighborNode.Value[1])
                     {
+                        Debug.Log("Better Candidate");
                         skipped = true;
                         break;
                     }
@@ -141,6 +149,7 @@ public class ASheep : MonoBehaviour
                 {
                     if (closed.Value[0] + closed.Value[1] < neighborNode.Value[0] + neighborNode.Value[1])
                     {
+                        Debug.Log("Better path");
                         skipped = true;
                         break;
                     }
@@ -164,9 +173,6 @@ public class ASheep : MonoBehaviour
             {
                 break;
             }
-
-            closedNodes.Add(curNode.Key, curNode.Value);
-
             // if (closedNodes.ContainsKey(curNode.Key))
             // {
             //     closedNodes[curNode.Key] = curNode.Value;    
@@ -175,7 +181,7 @@ public class ASheep : MonoBehaviour
             // {
             //     closedNodes.Add(curNode.Key, curNode.Value);
             // }
-            curNode = new KeyValuePair<GameObject, float[]>(startNode.Key, new float[2] {0, System.Int32.MaxValue});
+            // curNode = new KeyValuePair<GameObject, float[]>(startNode.Key, new float[2] {0, System.Int32.MaxValue});
         }
 
         closedNodes.Clear();
