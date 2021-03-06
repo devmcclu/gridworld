@@ -63,8 +63,12 @@ public class ASheep2 : MonoBehaviour
         bool targetFound = false;
 
         // While open list is not empty
-        while(openNodes.Count > 0 && !targetFound)
+        while(openNodes.Count > 0)
         {
+            if (targetFound)
+            {
+                break;
+            }
             //  Find the node with the lowest total cost in open
             foreach(GameObject node in openNodes)
             {
