@@ -56,6 +56,7 @@ public class GridGenerator : MonoBehaviour
                     tileArray[curCol, curRow] = tile;
                     tile.GetComponent<TileCost>().SetPos(curRow, curCol);
 
+                    // Add adjacent colomn tiles
                     if (curCol > 0)
                     {
                         if (tileArray[curCol - 1, curRow].TryGetComponent(typeof(TileController), out Component component))
@@ -64,6 +65,7 @@ public class GridGenerator : MonoBehaviour
                             tileArray[curCol - 1, curRow].GetComponent<TileCost>().adjacentTiles.Add(tile, 1f);
                         }
                     }
+                    // Add adjacent row tiles
                     if (curRow > 0)
                     {
                         if (tileArray[curCol, curRow - 1].TryGetComponent(typeof(TileController), out Component component))
@@ -72,7 +74,7 @@ public class GridGenerator : MonoBehaviour
                             tileArray[curCol, curRow - 1].GetComponent<TileCost>().adjacentTiles.Add(tile, 1f);
                         }
                     }
-
+                    // Add adjacent diagonal tiles
                     if (curRow > 0 && curCol > 0)
                     {
                         if (tileArray[curCol - 1, curRow - 1].TryGetComponent(typeof(TileController), out Component component))
@@ -82,13 +84,14 @@ public class GridGenerator : MonoBehaviour
                         }
                     }
 
+                    // Spawn a sheep
                     chance = Random.Range(0f, 1f);
                     if (chance > .7f && !hasSpawned)
                     {
                         GameObject sheep = (GameObject)Instantiate(refSheep, transform);
                         sheep.transform.position = newPos; //+ new Vector2(0.5f, 0.5f);
                         //sheep.GetComponent<DijkstraSheep>().SetPos(curRow, curCol);
-                        sheep.GetComponent<ASheep>().SetPos(curRow, curCol);
+                        sheep.GetComponent<ASheep2>().SetPos(curRow, curCol);
                         hasSpawned = true;
                     } 
                 }  
@@ -119,8 +122,8 @@ public class GridGenerator : MonoBehaviour
         transform.position = new Vector2(-gridW / 2 + tileSize / 2, gridL / 2 - tileSize / 2);
 
         // DijkstraSheep curSheep = FindObjectOfType<DijkstraSheep>();
-        ASheep curSheep = FindObjectOfType<ASheep>();
+        ASheep2 curSheep = FindObjectOfType<ASheep2>();
         curSheep.tileArray = tileArray;
-        curSheep.FindTarget();
+        //curSheep.FindTarget();
     }
 }

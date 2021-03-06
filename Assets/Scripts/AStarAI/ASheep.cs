@@ -14,16 +14,32 @@ public class ASheep : MonoBehaviour
     [SerializeField]
     private float moveTime = 2f;
 
+    void Start()
+    {
+        FindTarget();    
+    }
+
     public void FindTarget()
     {
-        if (tileArray[pos.x, pos.y].TryGetComponent(typeof(TileController), out Component component))
+        // if (tileArray[pos.x, pos.y].TryGetComponent(typeof(TileController), out Component component))
+        // {
+        //     targetNode = tileArray[pos.x, pos.y];
+        // }
+        // else
+        // {
+        //     targetNode = tileArray[0, 0];
+        // }
+        
+        while (targetNode == null)
         {
-            targetNode = tileArray[pos.x, pos.y];
+            int newX = Random.Range(0, tileArray.GetLength(0));
+            int newY = Random.Range(0, tileArray.GetLength(1));
+            if (tileArray[newX, newY].TryGetComponent(typeof(TileController), out Component component))
+            {
+                targetNode = tileArray[pos.x, pos.y];
+            }
         }
-        else
-        {
-            targetNode = tileArray[0, 0];
-        }
+
         // Go through list of grid objects
         for (int col = 0; col < tileArray.GetLength(0); col++)
         {
@@ -93,17 +109,24 @@ public class ASheep : MonoBehaviour
             // Find the lowest cost node
             foreach (KeyValuePair<GameObject, float[]> entry in openNodes)
             {
+                // if (closedNodes.ContainsKey(entry.Key))
+                // {
+                //     openNodes.Remove(entry.Key);
+                // }
                 if (entry.Value[0] + entry.Value[1] < curNode.Value[0] + curNode.Value[1] && !closedNodes.ContainsKey(entry.Key))
                 {
-                    curNode = entry;
+                    curNode = entry; // Chcek KeyValuePair assignment
                 }
             }
 
             // Remove the lowest code node from open nodes
-            openNodes.Remove(curNode.Key);
+            Debug.Log("Current Node Removed: " + openNodes.Remove(curNode.Key));
             Debug.Log("curNode closed");
             closedNodes.Add(curNode.Key, curNode.Value);
             Debug.Assert(!openNodes.ContainsKey(curNode.Key));
+
+            Debug.Log("Open Node count: " + openNodes.Count);
+            Debug.Log("Closed Node count: " + closedNodes.Count);
 
             // Set parents of each neighbor
             foreach (KeyValuePair<GameObject, float> entry in curNode.Key.GetComponent<TileCost>().adjacentTiles)
@@ -187,7 +210,7 @@ public class ASheep : MonoBehaviour
         closedNodes.Clear();
         openNodes.Clear();
 
-        if (finalNode == startNode.Key.GetComponent<TileCost>())
+        if (finalNode != targetNode.GetComponent<TileCost>())
         {
             Debug.Log("Failure, start over");
             FindTarget();

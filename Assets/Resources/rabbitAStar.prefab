@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6166692321617443735}
   - component: {fileID: 8456902033274700478}
-  - component: {fileID: 2780927511614764773}
+  - component: {fileID: 3271637436834898113}
   m_Layer: 0
   m_Name: rabbitAStar
   m_TagString: Untagged
@@ -82,7 +82,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &2780927511614764773
+--- !u!114 &3271637436834898113
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -91,7 +91,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 494358352595856448}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4809889f3cb45d147abdec23fb877fa8, type: 3}
+  m_Script: {fileID: 11500000, guid: be6237b863d997b40b94c1fd634128cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   moveTime: 2
