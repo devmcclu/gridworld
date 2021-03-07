@@ -41,7 +41,7 @@ public class ASheep2 : MonoBehaviour
             }
         }
 
-        Debug.Log("Target node pos: " + targetNode.transform.localPosition);
+        Debug.Log("Target node pos: " + targetNode.GetComponent<TileCost>().GetPos());
 
         MovementGen();
     }
@@ -55,20 +55,23 @@ public class ASheep2 : MonoBehaviour
         // Initialize closed list
         List<GameObject> closedNodes = new List<GameObject>();
         // Put starting node on open list (g = 0, h = heuristic)
-        tileArray[pos.x, pos.y].GetComponent<TileCost>().currentCost = 0;
-        tileArray[pos.x, pos.y].GetComponent<TileCost>().heuristic = Heuristic(pos);
-        openNodes.Add(tileArray[pos.x, pos.y]);
+        tileArray[pos.y, pos.x].GetComponent<TileCost>().currentCost = 0;
+        tileArray[pos.y, pos.x].GetComponent<TileCost>().heuristic = Heuristic(pos);
+        openNodes.Add(tileArray[pos.y, pos.x]);
 
-        GameObject curNode = tileArray[pos.x, pos.y];
+        GameObject curNode = tileArray[pos.y, pos.x];
         bool targetFound = false;
 
         // While open list is not empty
         while(openNodes.Count > 0)
         {
+            Debug.Log("OPen Nodes size:" + openNodes.Count);
+
             if (targetFound)
             {
                 break;
             }
+            curNode = openNodes[0];
             //  Find the node with the lowest total cost in open
             foreach(GameObject node in openNodes)
             {
@@ -78,17 +81,21 @@ public class ASheep2 : MonoBehaviour
                     curNode = node;
                 }
             }
+            // Remove current node from openNodes list
             openNodes.Remove(curNode);
             TileCost curNodeCost = curNode.GetComponent<TileCost>();
             //  find curNodes neighbors and set their parent to be curNode
             foreach(KeyValuePair<GameObject, float> neighbor in curNodeCost.adjacentTiles)
             {
-                neighbor.Key.GetComponent<TileCost>().SetParentNode(curNodeCost);
+                //if (!closedNodes.Contains(neighbor.Key))
+                //{
+                    neighbor.Key.GetComponent<TileCost>().SetParentNode(curNodeCost);
+                //}
             }
 
             Debug.Log("Found all neightbors");
 
-            //  for each neighbor
+            // for each neighbor
             foreach(KeyValuePair<GameObject, float> neighbor in curNodeCost.adjacentTiles)
             {
                 TileCost neighborCost = neighbor.Key.GetComponent<TileCost>();
@@ -97,13 +104,14 @@ public class ASheep2 : MonoBehaviour
                 neighborCost.currentCost = curNodeCost.currentCost + neighbor.Value;
                 // neighbor.h = heuristic
                 neighborCost.heuristic = Heuristic(neighborCost.GetPos());
-                // neighbor.f = neighbor.g + neighbor.h
+                // neighbor.f = neighbor.g + neighbor.h - done in neighbor
 
                 // If neighbor is goal, stop search
-                if (neighbor.Key.Equals(targetNode))
+                //if (neighbor.Key.Equals(targetNode))
+                if (neighbor.Key.name == targetNode.name)
                 {
                     curNode = neighbor.Key;
-                    closedNodes.Add(neighbor.Key);
+                    //closedNodes.Add(neighbor.Key);
                     targetFound = true;
                     Debug.Log("FOund target node");
                     break;    
@@ -143,7 +151,9 @@ public class ASheep2 : MonoBehaviour
                     openNodes.Add(neighbor.Key);
                 }
                 //  end for
-            }            
+            }     
+            // Remove curNode from closed list
+            closedNodes.Add(curNode);       
             // end while
         }     
 
@@ -153,13 +163,17 @@ public class ASheep2 : MonoBehaviour
             // retrace path from goal back to start via each node's parent 
             Stack<GameObject> pathToTarget = new Stack<GameObject>();
             pathToTarget.Push(curNode);
-            while(!pathToTarget.Contains(tileArray[pos.x, pos.y]))
+            while(!pathToTarget.Contains(tileArray[pos.y, pos.x]))
             {
                 GameObject nextNode = curNode.GetComponent<TileCost>().GetParentNode().gameObject;
                 pathToTarget.Push(nextNode);
                 curNode = nextNode;
             }
             StartCoroutine(StartMovement(pathToTarget));
+        }
+        else
+        {
+            Debug.Log("Failure");
         }
     }
 

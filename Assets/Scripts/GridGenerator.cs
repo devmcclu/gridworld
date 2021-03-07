@@ -44,10 +44,11 @@ public class GridGenerator : MonoBehaviour
                 {        
                     // Create a new tile
                     GameObject tile = (GameObject)Instantiate(refGrassTile, transform);
+                    tile.name = "Tile: " + curRow + ", " + curCol;
 
                     //Get correct position with spacing
-                    float posX = curCol * tileSize;
-                    float posY = curRow * -tileSize;
+                    float posX = curRow * tileSize;
+                    float posY = curCol * -tileSize;
 
                     //Set the position
                     Vector2 newPos = new Vector2(posX, posY);
@@ -101,8 +102,8 @@ public class GridGenerator : MonoBehaviour
                     GameObject tile = (GameObject)Instantiate(refWaterTile, transform);
 
                     //Get correct position with spacing
-                    float posX = curCol * tileSize;
-                    float posY = curRow * -tileSize;
+                    float posX = curRow * tileSize;
+                    float posY = curCol * -tileSize;
 
                     //Set the position
                     Vector2 newPos = new Vector2(posX, posY);
@@ -117,8 +118,8 @@ public class GridGenerator : MonoBehaviour
         Destroy(refWaterTile);
         Destroy(refSheep);
 
-        float gridW = cols * tileSize;
-        float gridL = rows * tileSize;
+        float gridL = cols * tileSize;
+        float gridW = rows * tileSize;
         transform.position = new Vector2(-gridW / 2 + tileSize / 2, gridL / 2 - tileSize / 2);
 
         // DijkstraSheep curSheep = FindObjectOfType<DijkstraSheep>();
