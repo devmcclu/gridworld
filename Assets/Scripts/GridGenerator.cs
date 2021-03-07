@@ -44,18 +44,18 @@ public class GridGenerator : MonoBehaviour
                 {        
                     // Create a new tile
                     GameObject tile = (GameObject)Instantiate(refGrassTile, transform);
-                    tile.name = "Tile: " + curRow + ", " + curCol;
+                    tile.name = "Tile: " + curCol + ", " + curRow;
 
                     //Get correct position with spacing
-                    float posX = curRow * tileSize;
-                    float posY = curCol * -tileSize;
+                    float posX = curCol * tileSize;
+                    float posY = curRow * -tileSize;
 
                     //Set the position
                     Vector2 newPos = new Vector2(posX, posY);
                     tile.transform.position = newPos;
                     // Put tile in tileArray
                     tileArray[curCol, curRow] = tile;
-                    tile.GetComponent<TileCost>().SetPos(curRow, curCol);
+                    tile.GetComponent<TileCost>().SetPos(curCol, curRow);
 
                     // Add adjacent colomn tiles
                     if (curCol > 0)
@@ -92,7 +92,7 @@ public class GridGenerator : MonoBehaviour
                         GameObject sheep = (GameObject)Instantiate(refSheep, transform);
                         sheep.transform.position = newPos; //+ new Vector2(0.5f, 0.5f);
                         //sheep.GetComponent<DijkstraSheep>().SetPos(curRow, curCol);
-                        sheep.GetComponent<ASheep2>().SetPos(curRow, curCol);
+                        sheep.GetComponent<ASheep2>().SetPos(curCol, curRow);
                         hasSpawned = true;
                     } 
                 }  
@@ -102,8 +102,8 @@ public class GridGenerator : MonoBehaviour
                     GameObject tile = (GameObject)Instantiate(refWaterTile, transform);
 
                     //Get correct position with spacing
-                    float posX = curRow * tileSize;
-                    float posY = curCol * -tileSize;
+                    float posX = curCol * tileSize;
+                    float posY = curRow * -tileSize;
 
                     //Set the position
                     Vector2 newPos = new Vector2(posX, posY);

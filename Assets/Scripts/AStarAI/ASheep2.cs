@@ -57,9 +57,9 @@ public class ASheep2 : MonoBehaviour
         // Put starting node on open list (g = 0, h = heuristic)
         tileArray[pos.y, pos.x].GetComponent<TileCost>().currentCost = 0;
         tileArray[pos.y, pos.x].GetComponent<TileCost>().heuristic = Heuristic(pos);
-        openNodes.Add(tileArray[pos.y, pos.x]);
+        openNodes.Add(tileArray[pos.x, pos.y]);
 
-        GameObject curNode = tileArray[pos.y, pos.x];
+        GameObject curNode = tileArray[pos.x, pos.y];
         bool targetFound = false;
 
         // While open list is not empty
@@ -163,7 +163,7 @@ public class ASheep2 : MonoBehaviour
             // retrace path from goal back to start via each node's parent 
             Stack<GameObject> pathToTarget = new Stack<GameObject>();
             pathToTarget.Push(curNode);
-            while(!pathToTarget.Contains(tileArray[pos.y, pos.x]))
+            while(!pathToTarget.Contains(tileArray[pos.x, pos.y]))
             {
                 GameObject nextNode = curNode.GetComponent<TileCost>().GetParentNode().gameObject;
                 pathToTarget.Push(nextNode);
@@ -198,7 +198,13 @@ public class ASheep2 : MonoBehaviour
 
     float Heuristic(Vector2Int pos)
     {
-        return Mathf.Abs(targetNodePos.x - pos.x) + Mathf.Abs(targetNodePos.y - pos.y);
+        float D = 1f;
+        float D2 = 1.5f;
+        
+        float dx = Mathf.Abs(targetNodePos.x - pos.x);
+        float dy = Mathf.Abs(targetNodePos.y - pos.y);
+
+        return D * (dx + dy) + (D2 - 2 * D) * Mathf.Min(dx, dy);
     }
 
     public void SetPos(int newX, int newY)
