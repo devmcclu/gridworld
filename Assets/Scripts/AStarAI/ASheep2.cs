@@ -55,8 +55,8 @@ public class ASheep2 : MonoBehaviour
         // Initialize closed list
         List<GameObject> closedNodes = new List<GameObject>();
         // Put starting node on open list (g = 0, h = heuristic)
-        tileArray[pos.y, pos.x].GetComponent<TileCost>().currentCost = 0;
-        tileArray[pos.y, pos.x].GetComponent<TileCost>().heuristic = Heuristic(pos);
+        tileArray[pos.x, pos.y].GetComponent<TileCost>().CurrentCost = 0;
+        tileArray[pos.x, pos.y].GetComponent<TileCost>().Heuristic = Heuristic(pos);
         openNodes.Add(tileArray[pos.x, pos.y]);
 
         GameObject curNode = tileArray[pos.x, pos.y];
@@ -81,15 +81,17 @@ public class ASheep2 : MonoBehaviour
                     curNode = node;
                 }
             }
+
             // Remove current node from openNodes list
             openNodes.Remove(curNode);
             TileCost curNodeCost = curNode.GetComponent<TileCost>();
+            
             //  find curNodes neighbors and set their parent to be curNode
             foreach(KeyValuePair<GameObject, float> neighbor in curNodeCost.adjacentTiles)
             {
                 //if (!closedNodes.Contains(neighbor.Key))
                 //{
-                    neighbor.Key.GetComponent<TileCost>().SetParentNode(curNodeCost);
+                neighbor.Key.GetComponent<TileCost>().SetParentNode(curNodeCost);
                 //}
             }
 
@@ -101,9 +103,9 @@ public class ASheep2 : MonoBehaviour
                 TileCost neighborCost = neighbor.Key.GetComponent<TileCost>();
 
                 // neighbor.g = curNode.g + cost to go from curNode to neighbor
-                neighborCost.currentCost = curNodeCost.currentCost + neighbor.Value;
+                neighborCost.CurrentCost = curNodeCost.CurrentCost + neighbor.Value;
                 // neighbor.h = heuristic
-                neighborCost.heuristic = Heuristic(neighborCost.GetPos());
+                neighborCost.Heuristic = Heuristic(neighborCost.GetPos());
                 // neighbor.f = neighbor.g + neighbor.h - done in neighbor
 
                 // If neighbor is goal, stop search
@@ -198,9 +200,11 @@ public class ASheep2 : MonoBehaviour
 
     float Heuristic(Vector2Int pos)
     {
+        // Cost to go cardinal
         float D = 1f;
+        // Cost to go diagonal
         float D2 = 1.5f;
-        
+        // POsition delta to target
         float dx = Mathf.Abs(targetNodePos.x - pos.x);
         float dy = Mathf.Abs(targetNodePos.y - pos.y);
 

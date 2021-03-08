@@ -13,9 +13,9 @@ public class TileCost : MonoBehaviour
     [SerializeField]
     private TileCost parentNode;
     // Estimated distance to goal
-    public float heuristic { get; set; }
+    public float Heuristic { get; set; }
     // Current cost from start point
-    public float currentCost { get; set; }
+    public float CurrentCost { get; set; }
     // Dictionary: Adj tile w/cost to move to
     public Dictionary<GameObject, float> adjacentTiles = new Dictionary<GameObject, float>();
 
@@ -42,6 +42,6 @@ public class TileCost : MonoBehaviour
     // F cost in A*
     public float FinalCost()
     {
-        return heuristic + currentCost;
+        return Heuristic + CurrentCost;
     }
 }
