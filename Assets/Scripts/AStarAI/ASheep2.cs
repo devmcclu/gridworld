@@ -54,7 +54,7 @@ public class ASheep2 : MonoBehaviour
             {
                 if (tileArray[i, j].TryGetComponent(typeof(TileController), out Component component))
                 {
-                    Debug.Log("Col: " + i + " Row: " + j);
+                    //Debug.Log("Col: " + i + " Row: " + j);
                     tileArray[i, j].GetComponent<TileCost>().ResetSprite();
                 }
             }

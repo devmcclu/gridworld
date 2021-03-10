@@ -2,6 +2,13 @@
 
 public class GridGenerator : MonoBehaviour
 {
+    enum AIType
+    {
+        Naive,
+        Dijkstra,
+        AStar
+    }
+
     // Length of grid
     [SerializeField]
     private int rows = 10;
@@ -11,6 +18,8 @@ public class GridGenerator : MonoBehaviour
     // Float for spacing objects
     [SerializeField]
     private float tileSize = 1;
+    [SerializeField]
+    private AIType aiType;
     // Public facing array of grid objects
     public GameObject[,] tileArray;
 
@@ -28,9 +37,27 @@ public class GridGenerator : MonoBehaviour
         // Get a tile to reference
         GameObject refGrassTile = (GameObject)Instantiate(Resources.Load("GrassTile"));
         GameObject refWaterTile = (GameObject)Instantiate(Resources.Load("WaterTile"));
+        //Initialize type of sheep
+        GameObject refSheep = new GameObject(); 
+        switch (aiType)
+        {
+            case AIType.Naive:
+                refSheep = (GameObject)Instantiate(Resources.Load("rabbit"));
+                break;
+
+            case AIType.Dijkstra:
+                refSheep = (GameObject)Instantiate(Resources.Load("rabbitDijkstra"));
+                break;
+
+            case AIType.AStar:
+                refSheep = (GameObject)Instantiate(Resources.Load("rabbitAStar"));
+                break;
+        }
+
         //GameObject refSheep = (GameObject)Instantiate(Resources.Load("rabbit"));
         //GameObject refSheep = (GameObject)Instantiate(Resources.Load("rabbitDijkstra"));
-        GameObject refSheep = (GameObject)Instantiate(Resources.Load("rabbitAStar"));
+        //GameObject refSheep = (GameObject)Instantiate(Resources.Load("rabbitAStar"));
+        
         float chance;
         bool hasSpawned = false;
         
@@ -91,8 +118,23 @@ public class GridGenerator : MonoBehaviour
                     {
                         GameObject sheep = (GameObject)Instantiate(refSheep, transform);
                         sheep.transform.position = newPos; //+ new Vector2(0.5f, 0.5f);
+                        
+                        switch (aiType)
+                        {
+                            case AIType.Naive:
+                                break;
+
+                            case AIType.Dijkstra:
+                                sheep.GetComponent<DijkstraSheep>().SetPos(curCol, curRow);
+                                break;
+
+                            case AIType.AStar:
+                                sheep.GetComponent<ASheep2>().SetPos(curCol, curRow);
+                                break;
+                        }
+                        
                         //sheep.GetComponent<DijkstraSheep>().SetPos(curRow, curCol);
-                        sheep.GetComponent<ASheep2>().SetPos(curCol, curRow);
+                        //sheep.GetComponent<ASheep2>().SetPos(curCol, curRow);
                         hasSpawned = true;
                     } 
                 }  
@@ -122,9 +164,21 @@ public class GridGenerator : MonoBehaviour
         float gridW = rows * tileSize;
         transform.position = new Vector2(-gridW / 2 + tileSize / 2, gridL / 2 - tileSize / 2);
 
-        // DijkstraSheep curSheep = FindObjectOfType<DijkstraSheep>();
-        ASheep2 curSheep = FindObjectOfType<ASheep2>();
-        curSheep.tileArray = tileArray;
-        //curSheep.FindTarget();
+        switch (aiType)
+        {
+            case AIType.Naive:
+                break;
+            
+            case AIType.Dijkstra:
+                DijkstraSheep curDSheep = FindObjectOfType<DijkstraSheep>();
+                curDSheep.tileArray = tileArray;
+                curDSheep.FindTarget();
+                break;
+
+            case AIType.AStar:
+                ASheep2 curASheep = FindObjectOfType<ASheep2>();
+                curASheep.tileArray = tileArray;
+                break;
+        }
     }
 }

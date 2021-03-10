@@ -153,6 +153,7 @@ MonoBehaviour:
   rows: 10
   cols: 10
   tileSize: 1
+  aiType: 1
 --- !u!4 &62636300
 Transform:
   m_ObjectHideFlags: 0
