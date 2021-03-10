@@ -47,7 +47,19 @@ public class ASheep2 : MonoBehaviour
     }
 
     void MovementGen()
-    {
+    {        
+        for (int i = 0; i < tileArray.GetLength(0); i++)
+        {
+            for (int j = 0; j < tileArray.GetLength(1); j++)
+            {
+                if (tileArray[i, j].TryGetComponent(typeof(TileController), out Component component))
+                {
+                    Debug.Log("Col: " + i + " Row: " + j);
+                    tileArray[i, j].GetComponent<TileCost>().ResetSprite();
+                }
+            }
+        }
+
         Debug.Log("Start Movement gen");
 
         // Initialize open list
@@ -55,9 +67,11 @@ public class ASheep2 : MonoBehaviour
         // Initialize closed list
         List<GameObject> closedNodes = new List<GameObject>();
         // Put starting node on open list (g = 0, h = heuristic)
-        tileArray[pos.x, pos.y].GetComponent<TileCost>().CurrentCost = 0;
-        tileArray[pos.x, pos.y].GetComponent<TileCost>().Heuristic = Heuristic(pos);
+        TileCost startNode = tileArray[pos.x, pos.y].GetComponent<TileCost>();
+        startNode.CurrentCost = 0;
+        startNode.Heuristic = Heuristic(pos);
         openNodes.Add(tileArray[pos.x, pos.y]);
+        startNode.SetOpened();
 
         GameObject curNode = tileArray[pos.x, pos.y];
         bool targetFound = false;
@@ -85,6 +99,7 @@ public class ASheep2 : MonoBehaviour
             // Remove current node from openNodes list
             openNodes.Remove(curNode);
             TileCost curNodeCost = curNode.GetComponent<TileCost>();
+            curNodeCost.ResetSprite();
             
             //  find curNodes neighbors and set their parent to be curNode
             foreach(KeyValuePair<GameObject, float> neighbor in curNodeCost.adjacentTiles)
@@ -112,8 +127,11 @@ public class ASheep2 : MonoBehaviour
                 //if (neighbor.Key.Equals(targetNode))
                 if (neighbor.Key.name == targetNode.name)
                 {
+                    closedNodes.Add(curNode);
+                    curNodeCost.SetClosed(); 
                     curNode = neighbor.Key;
                     //closedNodes.Add(neighbor.Key);
+                    //neighborCost.SetClosed();
                     targetFound = true;
                     Debug.Log("FOund target node");
                     break;    
@@ -151,11 +169,16 @@ public class ASheep2 : MonoBehaviour
                     Debug.Log("New candidate");
                     // add node to open list
                     openNodes.Add(neighbor.Key);
+                    neighborCost.SetOpened();
                 }
                 //  end for
             }     
             // Remove curNode from closed list
-            closedNodes.Add(curNode);       
+            //if (!closedNodes.Contains(curNode))
+            //{
+            closedNodes.Add(curNode);
+            curNodeCost.SetClosed(); 
+            //}
             // end while
         }     
 

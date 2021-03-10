@@ -12,12 +12,23 @@ public class TileCost : MonoBehaviour
     private Vector2Int pos;
     [SerializeField]
     private TileCost parentNode;
+    [SerializeField]
+    private GameObject closedSprite;
+    [SerializeField]
+    private GameObject openedSprite;
     // Estimated distance to goal
     public float Heuristic { get; set; }
     // Current cost from start point
     public float CurrentCost { get; set; }
     // Dictionary: Adj tile w/cost to move to
     public Dictionary<GameObject, float> adjacentTiles = new Dictionary<GameObject, float>();
+
+
+    void Start()
+    {
+        ResetSprite();    
+    }
+
 
     public void SetPos(int newX, int newY)
     {
@@ -43,5 +54,23 @@ public class TileCost : MonoBehaviour
     public float FinalCost()
     {
         return Heuristic + CurrentCost;
+    }
+
+    public void SetOpened()
+    {
+        openedSprite.SetActive(true);
+        closedSprite.SetActive(false);
+    }
+
+    public void SetClosed()
+    {
+        openedSprite.SetActive(false);
+        closedSprite.SetActive(true);
+    }
+
+    public void ResetSprite()
+    {
+        openedSprite.SetActive(false);
+        closedSprite.SetActive(false);
     }
 }
