@@ -150,8 +150,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e722c59b267ec948a4e65056564199d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rows: 10
-  cols: 10
+  rows: 6
+  cols: 6
   tileSize: 1
   aiType: 2
 --- !u!4 &62636300

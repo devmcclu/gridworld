@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class TileCost : MonoBehaviour
 {
@@ -16,6 +17,8 @@ public class TileCost : MonoBehaviour
     private GameObject closedSprite;
     [SerializeField]
     private GameObject openedSprite;
+    [SerializeField]
+    private TextMeshPro costText;
     // Estimated distance to goal
     public float Heuristic { get; set; }
     // Current cost from start point
@@ -28,7 +31,6 @@ public class TileCost : MonoBehaviour
     {
         ResetSprite();    
     }
-
 
     public void SetPos(int newX, int newY)
     {
@@ -53,7 +55,9 @@ public class TileCost : MonoBehaviour
     // F cost in A*
     public float FinalCost()
     {
-        return Heuristic + CurrentCost;
+        float cost = Heuristic + CurrentCost;
+        costText.text = cost.ToString();
+        return cost;
     }
 
     public void SetOpened()

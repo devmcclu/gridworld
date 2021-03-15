@@ -40,8 +40,8 @@ public class ASheep2 : MonoBehaviour
                 targetNode = tileArray[newX, newY];
             }
         }
-
-        Debug.Log("Target node pos: " + targetNode.GetComponent<TileCost>().GetPos());
+        targetNodePos = targetNode.GetComponent<TileCost>().GetPos();
+        Debug.Log("Target node pos: " + targetNodePos);
 
         MovementGen();
     }
@@ -96,6 +96,8 @@ public class ASheep2 : MonoBehaviour
                 }
             }
 
+            Debug.Log("curNode: " + curNode.name);
+
             // Remove current node from openNodes list
             openNodes.Remove(curNode);
             TileCost curNodeCost = curNode.GetComponent<TileCost>();
@@ -104,10 +106,10 @@ public class ASheep2 : MonoBehaviour
             //  find curNodes neighbors and set their parent to be curNode
             foreach(KeyValuePair<GameObject, float> neighbor in curNodeCost.adjacentTiles)
             {
-                //if (!closedNodes.Contains(neighbor.Key))
-                //{
-                neighbor.Key.GetComponent<TileCost>().SetParentNode(curNodeCost);
-                //}
+                if (!closedNodes.Contains(neighbor.Key))
+                {
+                    neighbor.Key.GetComponent<TileCost>().SetParentNode(curNodeCost);
+                }
             }
 
             Debug.Log("Found all neightbors");
@@ -124,7 +126,6 @@ public class ASheep2 : MonoBehaviour
                 // neighbor.f = neighbor.g + neighbor.h - done in neighbor
 
                 // If neighbor is goal, stop search
-                //if (neighbor.Key.Equals(targetNode))
                 if (neighbor.Key.name == targetNode.name)
                 {
                     closedNodes.Add(curNode);
@@ -193,6 +194,7 @@ public class ASheep2 : MonoBehaviour
                 GameObject nextNode = curNode.GetComponent<TileCost>().GetParentNode().gameObject;
                 pathToTarget.Push(nextNode);
                 curNode = nextNode;
+                Debug.Log("Path size: " + pathToTarget.Count);
             }
             StartCoroutine(StartMovement(pathToTarget));
         }
@@ -221,17 +223,18 @@ public class ASheep2 : MonoBehaviour
         Debug.Log("Done");
     }
 
-    float Heuristic(Vector2Int pos)
+    float Heuristic(Vector2Int nodePos)
     {
         // Cost to go cardinal
         float D = 1f;
         // Cost to go diagonal
         float D2 = 1.5f;
         // POsition delta to target
-        float dx = Mathf.Abs(targetNodePos.x - pos.x);
-        float dy = Mathf.Abs(targetNodePos.y - pos.y);
+        float dx = Mathf.Abs(nodePos.x - targetNodePos.x);
+        float dy = Mathf.Abs(nodePos.y - targetNodePos.y);
 
-        return D * (dx + dy) + (D2 - 2 * D) * Mathf.Min(dx, dy);
+        return (D * (dx + dy)) + ((D2 - (2 * D)) * Mathf.Min(dx, dy));
+        //return dx + dy;
     }
 
     public void SetPos(int newX, int newY)
