@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7775047344704003694}
   - component: {fileID: 5417278622246496071}
-  - component: {fileID: 484875678857831844}
+  - component: {fileID: -7148839791044597636}
   m_Layer: 0
   m_Name: rabbitDijkstra
   m_TagString: Untagged
@@ -82,7 +82,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &484875678857831844
+--- !u!114 &-7148839791044597636
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -91,7 +91,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4084388754691115449}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d30cba145a30ff240b4fab9b74fc6a27, type: 3}
+  m_Script: {fileID: 11500000, guid: 157934c40714215438ba9ea52f82fe6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   moveTime: 2

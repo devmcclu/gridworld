@@ -125,7 +125,7 @@ public class GridGenerator : MonoBehaviour
                                 break;
 
                             case AIType.Dijkstra:
-                                sheep.GetComponent<DijkstraSheep>().SetPos(curCol, curRow);
+                                sheep.GetComponent<DijkstraSheep2>().SetPos(curCol, curRow);
                                 break;
 
                             case AIType.AStar:
@@ -170,9 +170,9 @@ public class GridGenerator : MonoBehaviour
                 break;
             
             case AIType.Dijkstra:
-                DijkstraSheep curDSheep = FindObjectOfType<DijkstraSheep>();
+                DijkstraSheep2 curDSheep = FindObjectOfType<DijkstraSheep2>();
                 curDSheep.tileArray = tileArray;
-                curDSheep.FindTarget();
+                //curDSheep.FindTarget();
                 break;
 
             case AIType.AStar:
