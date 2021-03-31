@@ -15,6 +15,7 @@ public class ASheep2 : MonoBehaviour
     private float moveTime = 2f;
     private float timer = 0f;
     private bool isFinding = false;
+    public bool SelfFinding { get; set; }
     void Update()
     {
         if (timer < 5f && !isFinding)
