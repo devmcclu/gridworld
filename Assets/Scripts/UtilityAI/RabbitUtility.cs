@@ -54,10 +54,11 @@ public class RabbitUtility : MonoBehaviour
         {
             if (anxiety > foodNeed && anxiety > sleepNeed)
             {
-                
+                StopAllCoroutines();
             }
             else if (foodNeed > anxiety && foodNeed > sleepNeed)
             {
+                StopAllCoroutines();
                 MoveToGrass();
             }
             else if (sleepNeed > anxiety && sleepNeed > foodNeed)
