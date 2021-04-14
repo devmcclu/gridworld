@@ -55,14 +55,17 @@ public class RabbitUtility : MonoBehaviour
             if (anxiety > foodNeed && anxiety > sleepNeed)
             {
                 StopAllCoroutines();
+                aStar.StopAllCoroutines();
             }
             else if (foodNeed > anxiety && foodNeed > sleepNeed)
             {
                 StopAllCoroutines();
+                aStar.StopAllCoroutines();
                 MoveToGrass();
             }
             else if (sleepNeed > anxiety && sleepNeed > foodNeed)
             {
+                aStar.StopAllCoroutines();
                 StartCoroutine(RechargeEnergy());
             }
         }            
@@ -120,6 +123,6 @@ public class RabbitUtility : MonoBehaviour
             }
         }
 
-        aStar.MoveToPosition(aStar.GetComponent<TileCost>().GetPos());
+        aStar.MoveToPosition(closestGrass.GetComponent<TileCost>().GetPos());
     }
 }
