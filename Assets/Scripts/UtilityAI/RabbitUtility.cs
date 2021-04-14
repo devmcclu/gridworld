@@ -12,6 +12,10 @@ public class RabbitUtility : MonoBehaviour
     [SerializeField]
     private int energy = 100;
     [SerializeField]
+    private int energyRechargeRate = 5;
+    [SerializeField]
+    private float sleepTime = 2.5f;
+    [SerializeField]
     private float anxiety = 0f;
     [SerializeField]
     private float foodNeed = 0f;
@@ -19,21 +23,48 @@ public class RabbitUtility : MonoBehaviour
     private float sleepNeed = 0f;
     [SerializeField]
     private int maxDistance = 10;
-    // List of all close by sheep
+    // List of all close by rabbits
     [SerializeField]
-    private List<GameObject> closeSheep = new List<GameObject>();
+    private List<GameObject> closeRabbits = new List<GameObject>();
+    // List of all nearby wolves
     [SerializeField]
     private List<GameObject> closeWolves = new List<GameObject>();
+    // List of all grass nearby
+    [SerializeField]
+    private List<GameObject> closeGrass = new List<GameObject>();
     private GameObject closestWolf;
+    private GameObject closestGrass;
     private float timer = 0f;
     private float maxTime = 5f;
+    private UtilityAStar aStar;
     
+    void Start()
+    {
+        aStar = GetComponent<UtilityAStar>();    
+    }
+
     void Update()
     {
         timer += Time.deltaTime;
         CalculateAnxiety();
         CalculateFoodNeed();
-        CalculateSleepNeed();            
+        CalculateSleepNeed();
+
+        if (timer >= maxTime)
+        {
+            if (anxiety > foodNeed && anxiety > sleepNeed)
+            {
+                
+            }
+            else if (foodNeed > anxiety && foodNeed > sleepNeed)
+            {
+                MoveToGrass();
+            }
+            else if (sleepNeed > anxiety && sleepNeed > foodNeed)
+            {
+                StartCoroutine(RechargeEnergy());
+            }
+        }            
     }
 
     void CalculateAnxiety()
@@ -64,5 +95,30 @@ public class RabbitUtility : MonoBehaviour
     void CalculateSleepNeed()
     {
         sleepNeed = energy / 100;
+    }
+
+    IEnumerator RechargeEnergy()
+    {
+        energy += energyRechargeRate;
+        yield return new WaitForSeconds(sleepTime);
+    }
+
+    void MoveToGrass()
+    {
+        Debug.Log("Moving towards GRass");
+
+        float distance = Vector3.Distance(transform.position, closeGrass[0].transform.position);
+        closestGrass = closeGrass[0];
+        foreach (GameObject tile in closeGrass)
+        {
+            if (Vector3.Distance(transform.position, tile.transform.position)
+                < distance)
+            {
+                distance = Vector3.Distance(transform.position, tile.transform.position);
+                closestGrass = tile;
+            }
+        }
+
+        aStar.MoveToPosition(aStar.GetComponent<TileCost>().GetPos());
     }
 }
