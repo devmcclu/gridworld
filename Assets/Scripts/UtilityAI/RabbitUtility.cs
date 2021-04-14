@@ -56,6 +56,7 @@ public class RabbitUtility : MonoBehaviour
             {
                 StopAllCoroutines();
                 aStar.StopAllCoroutines();
+                MoveAwayFromWolf();
             }
             else if (foodNeed > anxiety && foodNeed > sleepNeed)
             {
@@ -124,5 +125,10 @@ public class RabbitUtility : MonoBehaviour
         }
 
         aStar.MoveToPosition(closestGrass.GetComponent<TileCost>().GetPos());
+    }
+
+    void MoveAwayFromWolf()
+    {
+
     }
 }
