@@ -12,6 +12,8 @@ public class RabbitUtility : MonoBehaviour
     [SerializeField]
     private int energy = 100;
     [SerializeField]
+    private int maxEnergy = 100;
+    [SerializeField]
     private int energyRechargeRate = 5;
     [SerializeField]
     private float sleepTime = 2.5f;
@@ -37,6 +39,18 @@ public class RabbitUtility : MonoBehaviour
     private float timer = 0f;
     private float maxTime = 5f;
     private UtilityAStar aStar;
+
+    enum State
+    {
+        RunAway,
+        GoEat,
+        Sleeping,
+        Wondering
+    }
+
+    private State newState;
+    private State currentState = State.Wondering;
+
     
     void Start()
     {
@@ -52,22 +66,60 @@ public class RabbitUtility : MonoBehaviour
 
         if (timer >= maxTime)
         {
+            // Set a new state
             if (anxiety > foodNeed && anxiety > sleepNeed)
             {
-                StopAllCoroutines();
-                aStar.StopAllCoroutines();
-                MoveAwayFromWolf();
+                newState = State.RunAway;
             }
             else if (foodNeed > anxiety && foodNeed > sleepNeed)
             {
-                StopAllCoroutines();
-                aStar.StopAllCoroutines();
-                MoveToGrass();
+                newState = State.GoEat;
             }
             else if (sleepNeed > anxiety && sleepNeed > foodNeed)
             {
-                aStar.StopAllCoroutines();
-                StartCoroutine(RechargeEnergy());
+                newState = State.Sleeping;
+            }
+            else
+            {
+                newState = State.Wondering;
+            }
+            timer = 0f;
+
+            // Check if the state has changed since last sense loop
+            if (newState != currentState)
+            {
+                switch (newState)
+                {
+                    // Run away from the closest wolf
+                    case State.RunAway:
+                        currentState = State.RunAway;
+                        Debug.Log("Must run");
+                        StopAllCoroutines();
+                        aStar.StopAllCoroutines();
+                        MoveAwayFromWolf();
+                        break;
+                    // Find food to gain health
+                    case State.GoEat:
+                        currentState = State.GoEat;
+                        Debug.Log("Must eat");
+                        StopAllCoroutines();
+                        aStar.StopAllCoroutines();
+                        MoveToGrass();
+                        break;
+                    // Sleep to gain energy
+                    case State.Sleeping:
+                        currentState = State.Sleeping;
+                        Debug.Log("Must sleep");
+                        aStar.StopAllCoroutines();
+                        StartCoroutine(RechargeEnergy());
+                        break;
+                    // Wonder aimlessly
+                    case State.Wondering:
+                        currentState = State.Wondering;
+                        StopAllCoroutines();
+                        aStar.StopAllCoroutines();
+                        break;
+                }
             }
         }            
     }
@@ -99,13 +151,24 @@ public class RabbitUtility : MonoBehaviour
 
     void CalculateSleepNeed()
     {
-        sleepNeed = energy / 100;
+        sleepNeed = (100 - energy) / 100;
     }
 
     IEnumerator RechargeEnergy()
     {
-        energy += energyRechargeRate;
-        yield return new WaitForSeconds(sleepTime);
+        while (energy < maxEnergy)
+        {
+            Debug.Log("Get that sleep");
+            if (energy + energyRechargeRate <= maxEnergy)
+            {
+                energy += energyRechargeRate;        
+            }
+            else
+            {
+                energy = maxEnergy;
+            }
+            yield return new WaitForSeconds(sleepTime);
+        }
     }
 
     void MoveToGrass()

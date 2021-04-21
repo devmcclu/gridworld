@@ -6,7 +6,8 @@ public class GridGenerator : MonoBehaviour
     {
         Naive,
         Dijkstra,
-        AStar
+        AStar,
+        Utility
     }
 
     // Length of grid
@@ -51,6 +52,9 @@ public class GridGenerator : MonoBehaviour
 
             case AIType.AStar:
                 refSheep = (GameObject)Instantiate(Resources.Load("rabbitAStar"));
+                break;
+            case AIType.Utility:
+                refSheep = (GameObject)Instantiate(Resources.Load("rabbitUtility"));
                 break;
         }
 
@@ -131,6 +135,9 @@ public class GridGenerator : MonoBehaviour
                             case AIType.AStar:
                                 sheep.GetComponent<ASheep2>().SetPos(curCol, curRow);
                                 break;
+                            case AIType.Utility:
+                                sheep.GetComponent<UtilityAStar>().SetPos(curRow, curCol);
+                                break;
                         }
                         
                         //sheep.GetComponent<DijkstraSheep>().SetPos(curRow, curCol);
@@ -178,6 +185,10 @@ public class GridGenerator : MonoBehaviour
             case AIType.AStar:
                 ASheep2 curASheep = FindObjectOfType<ASheep2>();
                 curASheep.tileArray = tileArray;
+                break;
+            case AIType.Utility:
+                RabbitUtility curUSheep = FindObjectOfType<RabbitUtility>();
+                curUSheep.GetComponent<UtilityAStar>().tileArray = tileArray;
                 break;
         }
     }
