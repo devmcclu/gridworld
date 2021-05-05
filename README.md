@@ -30,8 +30,7 @@ The GridGenerator Script handles the spawning of the grid and any AI agents. Val
 * Utility
     * RabbitUtility.cs
         * Chooses action based on curve
-        * Moves sometimes
-        * Has trouble with more than one agent
+        * Broken implementation of gettting all the snakes in the scene
     * SnakeUtility.cs
         * Sits still
     * UtilityAStar

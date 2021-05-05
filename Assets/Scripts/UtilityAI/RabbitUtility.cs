@@ -37,7 +37,7 @@ public class RabbitUtility : MonoBehaviour
     private float maxTime = 5f;
     private UtilityAStar aStar;
     // List of all nearby wolves
-    public SnakeUtility[] CloseSnakes { get; set; } = new SnakeUtility[0];
+    public List<SnakeUtility> CloseSnakes { get; set; } = new List<SnakeUtility>();
     enum State
     {
         RunAway,
@@ -127,7 +127,7 @@ public class RabbitUtility : MonoBehaviour
 
     void CalculateAnxiety()
     {
-        if(CloseSnakes.Length > 0)
+        if(CloseSnakes.Count > 0)
         {
             closestSnake = CloseSnakes[0];
             foreach(SnakeUtility snake in CloseSnakes)
@@ -202,6 +202,8 @@ public class RabbitUtility : MonoBehaviour
             }
         }
 
-        
+        float newX = (gameObject.transform.position.x - closestSnake.gameObject.transform.position.x) * -1;
+        float newY = (gameObject.transform.position.y - closestSnake.gameObject.transform.position.y) * -1;
+        aStar.MoveToPosition(new Vector2Int((int)newX, (int)newY));
     }
 }

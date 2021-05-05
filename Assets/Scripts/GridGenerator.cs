@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class GridGenerator : MonoBehaviour
 {
@@ -216,7 +217,7 @@ public class GridGenerator : MonoBehaviour
                 {
                     Debug.Log("New sheep:" + curUSheepList[i].name);
                     curUSheepList[i].GetComponent<UtilityAStar>().tileArray = tileArray;
-                    curUSheepList[i].GetComponent<RabbitUtility>().CloseSnakes = FindObjectsOfType<SnakeUtility>();
+                    curUSheepList[i].GetComponent<RabbitUtility>().CloseSnakes = new List<SnakeUtility>(FindObjectsOfType<SnakeUtility>());
                 }
                 break;
         }
