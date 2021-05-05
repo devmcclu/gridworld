@@ -28,18 +28,16 @@ public class RabbitUtility : MonoBehaviour
     // List of all close by rabbits
     [SerializeField]
     private List<GameObject> closeRabbits = new List<GameObject>();
-    // List of all nearby wolves
-    [SerializeField]
-    private List<GameObject> closeWolves = new List<GameObject>();
     // List of all grass nearby
     [SerializeField]
     private List<GameObject> closeGrass = new List<GameObject>();
-    private GameObject closestWolf;
+    private SnakeUtility closestSnake;
     private GameObject closestGrass;
     private float timer = 0f;
     private float maxTime = 5f;
     private UtilityAStar aStar;
-
+    // List of all nearby wolves
+    public SnakeUtility[] CloseSnakes { get; set; } = new SnakeUtility[0];
     enum State
     {
         RunAway,
@@ -79,10 +77,10 @@ public class RabbitUtility : MonoBehaviour
             {
                 newState = State.Sleeping;
             }
-            else
-            {
-                newState = State.Wondering;
-            }
+            // else
+            // {
+            //     newState = State.Wondering;
+            // }
             timer = 0f;
 
             // Check if the state has changed since last sense loop
@@ -110,34 +108,36 @@ public class RabbitUtility : MonoBehaviour
                     case State.Sleeping:
                         currentState = State.Sleeping;
                         Debug.Log("Must sleep");
+                        StopAllCoroutines();
                         aStar.StopAllCoroutines();
                         StartCoroutine(RechargeEnergy());
                         break;
                     // Wonder aimlessly
-                    case State.Wondering:
-                        currentState = State.Wondering;
-                        Debug.Log("What do");
-                        StopAllCoroutines();
-                        aStar.StopAllCoroutines();
-                        break;
+                    // case State.Wondering:
+                    //     currentState = State.Wondering;
+                    //     Debug.Log("What do");
+                    //     StopAllCoroutines();
+                    //     aStar.StopAllCoroutines();
+                    //     break;
                 }
+                Debug.Log("Switched");
             }
         }            
     }
 
     void CalculateAnxiety()
     {
-        if(closeWolves.Count > 0)
+        if(CloseSnakes.Length > 0)
         {
-            closestWolf = closeWolves[0];
-            foreach(GameObject wolf in closeWolves)
+            closestSnake = CloseSnakes[0];
+            foreach(SnakeUtility snake in CloseSnakes)
             {
-                if (Vector2.Distance(gameObject.transform.position, wolf.transform.position) < Vector2.Distance(gameObject.transform.position, closestWolf.transform.position))
+                if (Vector2.Distance(gameObject.transform.position, snake.gameObject.transform.position) < Vector2.Distance(gameObject.transform.position, closestSnake.gameObject.transform.position))
                 {
-                    closestWolf = wolf;
+                    closestSnake = snake;
                 }
             }
-            anxiety = (maxDistance - Vector2.Distance(gameObject.transform.position, closestWolf.transform.position)) / maxDistance;
+            anxiety = (maxDistance - Vector2.Distance(gameObject.transform.position, closestSnake.gameObject.transform.position)) / maxDistance;
         }
         else
         {

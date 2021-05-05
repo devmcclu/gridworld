@@ -20,6 +20,10 @@ public class GridGenerator : MonoBehaviour
     [SerializeField]
     private float tileSize = 1;
     [SerializeField]
+    private int rabbitAI = 1;
+    [SerializeField]
+    private int wolfAI = 1;
+    [SerializeField]
     private AIType aiType;
     // Public facing array of grid objects
     public GameObject[,] tileArray;
@@ -39,7 +43,8 @@ public class GridGenerator : MonoBehaviour
         GameObject refGrassTile = (GameObject)Instantiate(Resources.Load("GrassTile"));
         GameObject refWaterTile = (GameObject)Instantiate(Resources.Load("WaterTile"));
         //Initialize type of sheep
-        GameObject refSheep = new GameObject(); 
+        GameObject refSheep = new GameObject();
+        GameObject refSnake = new GameObject();
         switch (aiType)
         {
             case AIType.Naive:
@@ -55,14 +60,16 @@ public class GridGenerator : MonoBehaviour
                 break;
             case AIType.Utility:
                 refSheep = (GameObject)Instantiate(Resources.Load("rabbitUtility"));
+                refSnake = (GameObject)Instantiate(Resources.Load("snakeUtility"));
                 break;
         }
         
         float chance;
         // Check if one sheep has spawned for "simpler" AI
-        bool hasSpawned = false;
-        // Int for sheep that can spawn multiple times
+        // bool hasSpawned = false;
+        // Int for sheep and snakes that have spawned
         int spawnedSheep = 0;
+        int spawnedSnakes = 0;
         
         for (int curCol = 0; curCol < cols; curCol++)
         {
@@ -117,7 +124,7 @@ public class GridGenerator : MonoBehaviour
 
                     // Spawn a sheep
                     chance = Random.Range(0f, 1f);
-                    if (chance > .7f && !hasSpawned && spawnedSheep < 1)
+                    if (chance > .7f && spawnedSheep < rabbitAI)
                     {
                         GameObject sheep = (GameObject)Instantiate(refSheep, transform);
                         sheep.transform.position = newPos; //+ new Vector2(0.5f, 0.5f);
@@ -129,12 +136,14 @@ public class GridGenerator : MonoBehaviour
 
                             case AIType.Dijkstra:
                                 sheep.GetComponent<DijkstraSheep2>().SetPos(curCol, curRow);
-                                hasSpawned = true;
+                                //hasSpawned = true;
+                                spawnedSheep++;
                                 break;
 
                             case AIType.AStar:
                                 sheep.GetComponent<ASheep2>().SetPos(curCol, curRow);
-                                hasSpawned = true;
+                                //hasSpawned = true;
+                                spawnedSheep++;
                                 break;
                             case AIType.Utility:
                                 sheep.GetComponent<UtilityAStar>().SetPos(curRow, curCol);
@@ -143,6 +152,15 @@ public class GridGenerator : MonoBehaviour
                                 break;
                         }
                     } 
+                    else if (chance < .3f && spawnedSnakes < wolfAI)
+                    {
+                        GameObject snake = (GameObject)Instantiate(refSnake, transform);
+                        if (aiType == AIType.Utility)
+                        {
+                            snake.GetComponent<UtilityAStar>().SetPos(curRow, curCol);
+                            spawnedSnakes++;
+                        }
+                    }
                 }  
                 else
                 {
@@ -165,6 +183,7 @@ public class GridGenerator : MonoBehaviour
         Destroy(refGrassTile);
         Destroy(refWaterTile);
         Destroy(refSheep);
+        Destroy(refSnake);
 
         float gridL = cols * tileSize;
         float gridW = rows * tileSize;
@@ -187,10 +206,16 @@ public class GridGenerator : MonoBehaviour
                 break;
             case AIType.Utility:
                 RabbitUtility[] curUSheepList = FindObjectsOfType<RabbitUtility>();
-                foreach (RabbitUtility curUSheep in curUSheepList)
+                // foreach (RabbitUtility curUSheep in curUSheepList)
+                // {
+                //     Debug.Log("New sheep:" + curUSheep.name);
+                //     curUSheep.GetComponent<UtilityAStar>().tileArray = tileArray;
+                // }
+                for (int i = 1; i < curUSheepList.Length; i++)
                 {
-                    Debug.Log("New sheep:" + curUSheep.name);
-                    curUSheep.GetComponent<UtilityAStar>().tileArray = tileArray;
+                    Debug.Log("New sheep:" + curUSheepList[i].name);
+                    curUSheepList[i].GetComponent<UtilityAStar>().tileArray = tileArray;
+                    curUSheepList[i].GetComponent<RabbitUtility>().CloseSnakes = FindObjectsOfType<SnakeUtility>();
                 }
                 break;
         }
