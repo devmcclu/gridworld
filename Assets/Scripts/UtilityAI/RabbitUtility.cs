@@ -60,12 +60,12 @@ public class RabbitUtility : MonoBehaviour
     void Update()
     {
         timer += Time.deltaTime;
-        CalculateAnxiety();
-        CalculateFoodNeed();
-        CalculateSleepNeed();
 
         if (timer >= maxTime)
         {
+            CalculateAnxiety();
+            CalculateFoodNeed();
+            CalculateSleepNeed();
             // Set a new state
             if (anxiety > foodNeed && anxiety > sleepNeed)
             {
@@ -116,6 +116,7 @@ public class RabbitUtility : MonoBehaviour
                     // Wonder aimlessly
                     case State.Wondering:
                         currentState = State.Wondering;
+                        Debug.Log("What do");
                         StopAllCoroutines();
                         aStar.StopAllCoroutines();
                         break;

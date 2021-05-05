@@ -57,13 +57,12 @@ public class GridGenerator : MonoBehaviour
                 refSheep = (GameObject)Instantiate(Resources.Load("rabbitUtility"));
                 break;
         }
-
-        //GameObject refSheep = (GameObject)Instantiate(Resources.Load("rabbit"));
-        //GameObject refSheep = (GameObject)Instantiate(Resources.Load("rabbitDijkstra"));
-        //GameObject refSheep = (GameObject)Instantiate(Resources.Load("rabbitAStar"));
         
         float chance;
+        // Check if one sheep has spawned for "simpler" AI
         bool hasSpawned = false;
+        // Int for sheep that can spawn multiple times
+        int spawnedSheep = 0;
         
         for (int curCol = 0; curCol < cols; curCol++)
         {
@@ -118,7 +117,7 @@ public class GridGenerator : MonoBehaviour
 
                     // Spawn a sheep
                     chance = Random.Range(0f, 1f);
-                    if (chance > .7f && !hasSpawned)
+                    if (chance > .7f && !hasSpawned && spawnedSheep < 1)
                     {
                         GameObject sheep = (GameObject)Instantiate(refSheep, transform);
                         sheep.transform.position = newPos; //+ new Vector2(0.5f, 0.5f);
@@ -130,19 +129,19 @@ public class GridGenerator : MonoBehaviour
 
                             case AIType.Dijkstra:
                                 sheep.GetComponent<DijkstraSheep2>().SetPos(curCol, curRow);
+                                hasSpawned = true;
                                 break;
 
                             case AIType.AStar:
                                 sheep.GetComponent<ASheep2>().SetPos(curCol, curRow);
+                                hasSpawned = true;
                                 break;
                             case AIType.Utility:
                                 sheep.GetComponent<UtilityAStar>().SetPos(curRow, curCol);
+                                //hasSpawned = true;
+                                spawnedSheep++;
                                 break;
                         }
-                        
-                        //sheep.GetComponent<DijkstraSheep>().SetPos(curRow, curCol);
-                        //sheep.GetComponent<ASheep2>().SetPos(curCol, curRow);
-                        hasSpawned = true;
                     } 
                 }  
                 else
@@ -187,8 +186,12 @@ public class GridGenerator : MonoBehaviour
                 curASheep.tileArray = tileArray;
                 break;
             case AIType.Utility:
-                RabbitUtility curUSheep = FindObjectOfType<RabbitUtility>();
-                curUSheep.GetComponent<UtilityAStar>().tileArray = tileArray;
+                RabbitUtility[] curUSheepList = FindObjectsOfType<RabbitUtility>();
+                foreach (RabbitUtility curUSheep in curUSheepList)
+                {
+                    Debug.Log("New sheep:" + curUSheep.name);
+                    curUSheep.GetComponent<UtilityAStar>().tileArray = tileArray;
+                }
                 break;
         }
     }
