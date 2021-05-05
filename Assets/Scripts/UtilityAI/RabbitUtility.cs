@@ -193,6 +193,15 @@ public class RabbitUtility : MonoBehaviour
 
     void MoveAwayFromWolf()
     {
+        closestSnake = CloseSnakes[0];
+        foreach(SnakeUtility snake in CloseSnakes)
+        {
+            if (Vector2.Distance(gameObject.transform.position, snake.gameObject.transform.position) < Vector2.Distance(gameObject.transform.position, closestSnake.gameObject.transform.position))
+            {
+                closestSnake = snake;
+            }
+        }
 
+        
     }
 }

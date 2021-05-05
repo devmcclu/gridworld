@@ -22,7 +22,7 @@ public class GridGenerator : MonoBehaviour
     [SerializeField]
     private int rabbitAI = 1;
     [SerializeField]
-    private int wolfAI = 1;
+    private int snakeAI = 1;
     [SerializeField]
     private AIType aiType;
     // Public facing array of grid objects
@@ -152,9 +152,10 @@ public class GridGenerator : MonoBehaviour
                                 break;
                         }
                     } 
-                    else if (chance < .3f && spawnedSnakes < wolfAI)
+                    else if (chance < .3f && spawnedSnakes < snakeAI)
                     {
                         GameObject snake = (GameObject)Instantiate(refSnake, transform);
+                        snake.transform.position = newPos;
                         if (aiType == AIType.Utility)
                         {
                             snake.GetComponent<UtilityAStar>().SetPos(curRow, curCol);

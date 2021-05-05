@@ -154,7 +154,7 @@ MonoBehaviour:
   cols: 10
   tileSize: 1
   rabbitAI: 1
-  wolfAI: 1
+  snakeAI: 5
   aiType: 3
 --- !u!4 &62636300
 Transform:
